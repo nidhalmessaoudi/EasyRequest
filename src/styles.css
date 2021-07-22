@@ -1,0 +1,46 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #eeeeee;
+  font-family: "Poppins", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+a {
+  color: black;
+}
+
+a:link,
+a:visited {
+  color: black;
+}
+
+.title {
+  margin: 4rem 0 2rem 0;
+}
+
+.result-container {
+  margin-top: 2rem;
+  width: 80rem;
+  height: 23rem;
+}
+
+.type-selection {
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+}
+
+.type-selection:focus {
+  outline: 0;
+}
+
+.footer {
+  margin-top: 1.5rem;
+}
