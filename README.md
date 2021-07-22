@@ -2,7 +2,7 @@
 A web app for sending HTTP requests directly from your browser.
 
 ## Current Version
-<a href="https://easyrequest.github.io"><b>v0.1.0 Beta for Web</b></a>
+<a href="https://easyrequest.netlify.app"><b>v0.1.0 Beta for Web</b></a>
 
 ## Tasks
 <ol>
