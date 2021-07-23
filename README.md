@@ -18,7 +18,7 @@ A web app for sending HTTP requests directly from your browser.
   <li>Add request body 🕒</li>
   <li>Error handling 🕒</li>
   <li>Provide usage guide 🕒</li>
-  <li>Make it mobile friendly</li>
+  <li>Make it mobile friendly 🕒</li>
 </ol>
 
 ## Upcoming
