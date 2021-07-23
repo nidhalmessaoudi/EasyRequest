@@ -14,10 +14,11 @@ A web app for sending HTTP requests directly from your browser.
   <li>Display results ✔</li>
   <li>Style the elements ✔</li>
   <li>Release and deploy v0.1.0 Beta for web ✔</li>
-  <li>Error handling 🕒</li>
   <li>Add request headers 🕒</li>
   <li>Add request body 🕒</li>
+  <li>Error handling 🕒</li>
   <li>Provide usage guide 🕒</li>
+  <li>Make it mobile friendly</li>
 </ol>
 
 ## Upcoming
