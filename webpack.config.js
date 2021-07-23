@@ -1,10 +1,13 @@
 const path = require("path");
 
+const dotenv = require("dotenv");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
+dotenv.config();
+
 module.exports = {
-  mode: "development",
+  mode: process.env.MODE,
   entry: "./src/index.ts",
   output: {
     filename: "bundle.[contenthash].js",
