@@ -6,7 +6,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 dotenv.config();
 
-module.exports = {
+const webpackConfig = {
   mode: process.env.MODE,
   entry: "./src/index.ts",
   output: {
@@ -20,7 +20,6 @@ module.exports = {
     historyApiFallback: true,
     port: 8080,
   },
-  devtool: "inline-source-map",
   module: {
     rules: [
       {
@@ -49,3 +48,9 @@ module.exports = {
     new MiniCssExtractPlugin(),
   ],
 };
+
+if (process.env.MODE === "development") {
+  webpackConfig.devtool = "inline-source-map";
+}
+
+module.exports = webpackConfig;

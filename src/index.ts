@@ -14,6 +14,7 @@ function render(position: InsertPosition, layout: string) {
 let reqForm: HTMLFormElement;
 let reqType: HTMLSelectElement;
 let reqEndpoint: HTMLInputElement;
+let sendReqBtn: HTMLButtonElement;
 let resultsEditor: JSONEditor;
 function loadHandler() {
   render("afterbegin", initialLayout);
@@ -26,6 +27,7 @@ function loadHandler() {
   reqForm = document.getElementById("req-form")! as HTMLFormElement;
   reqType = document.getElementById("req-type")! as HTMLSelectElement;
   reqEndpoint = document.getElementById("req-endpoint")! as HTMLInputElement;
+  sendReqBtn = document.getElementById("send-req")! as HTMLButtonElement;
   reqForm.addEventListener("submit", submitHandler);
 }
 
@@ -33,19 +35,28 @@ async function submitHandler(e: Event) {
   try {
     e.preventDefault();
 
-    const sendReqBtn = document.getElementById(
-      "send-req"
-    )! as HTMLButtonElement;
     sendReqBtn.textContent = "Sending";
     sendReqBtn.disabled = true;
     resultsEditor.set({ Notice: "Loading data..." });
-    const req = await fetch(reqEndpoint.value, { method: reqType.value });
+    const req = await fetch(reqEndpoint.value, {
+      method: reqType.value,
+      mode: "no-cors",
+    });
     const res = await req.json();
     sendReqBtn.textContent = "Send";
     sendReqBtn.disabled = false;
     resultsEditor.set(res);
     resultsEditor.focus();
   } catch (err) {
+    sendReqBtn.textContent = "Failed";
+    sendReqBtn.style.backgroundColor = "#dc3545";
+    sendReqBtn.style.borderColor = "#dc3545";
+    setTimeout(() => {
+      sendReqBtn.style.backgroundColor = "#0d6efd";
+      sendReqBtn.style.borderColor = "#0d6efd";
+      sendReqBtn.disabled = false;
+      sendReqBtn.textContent = "Send";
+    }, 3000);
     console.error(err);
   }
 }
@@ -69,6 +80,7 @@ const initialLayout = `
                 class="form-control"
                 placeholder="Put The Request Url Here..."
                 id="req-endpoint"
+                required
             >
             <button 
                 type="submit"
