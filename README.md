@@ -1,5 +1,5 @@
 # EasyRequest
-A web app for sending HTTP requests directly from your browser.
+A web client for sending HTTP requests directly from your browser.
 
 ## Current Version
 <a href="https://easyrequest.netlify.app"><b>v0.1.0 Beta for Web</b></a>
