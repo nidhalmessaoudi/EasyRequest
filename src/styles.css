@@ -1,3 +1,11 @@
+:root {
+  --light-bg-color: #eeeeee;
+  --light-text-color: #000000;
+  --dark-bg-color: #18191a;
+  --secondary-dark-bg-color: #3a3b3c;
+  --dark-text-color: #eeeeee;
+  --main-color: #0d6efd;
+}
 * {
   padding: 0;
   margin: 0;
@@ -9,24 +17,24 @@ body {
   text-align: center;
 }
 
-.light-theme {
-  background-color: #eeeeee;
-  color: #000000;
+body.light-theme {
+  background-color: var(--light-bg-color);
+  color: var(--light-text-color);
 }
 
-.dark-theme {
-  background-color: #2b2b2b;
-  color: #eeeeee;
+body.dark-theme {
+  background-color: var(--dark-bg-color);
+  color: var(--dark-text-color);
 }
 
 a:link.light-theme,
 a:visited.light-theme {
-  color: #000000;
+  color: var(--light-text-color);
 }
 
-a:link .dark-theme,
-a:visited .dark-theme {
-  color: #eeeeee;
+a:link.dark-theme,
+a:visited.dark-theme {
+  color: var(--dark-text-color);
 }
 
 .main {
@@ -44,8 +52,8 @@ a:visited .dark-theme {
 }
 
 .form-control__dark-theme {
-  background-color: #444444;
-  border: 1px solid #444444;
+  background-color: var(--secondary-dark-bg-color);
+  border: 1px solid var(--secondary-dark-bg-color);
 }
 
 .type-selection {
@@ -62,15 +70,14 @@ a:visited .dark-theme {
 }
 
 .type-selection__dark-theme {
-  background-color: #444444;
-  color: #eeeeee;
-  border: 1px solid #444444;
-  border-right: 1px solid #eeeeee !important;
+  background-color: var(--dark-bg-color);
+  color: var(--dark-text-color);
+  border: 1px solid var(--secondary-dark-bg-color);
 }
 
 .type-selection:focus {
   outline: 0;
-  border: 1px solid #0d6efd;
+  border: 1px solid var(--main-color);
 }
 
 .footer {
@@ -84,40 +91,15 @@ a:visited .dark-theme {
 }
 
 .active-option {
-  border-bottom: 0.2rem solid #0d6efd;
+  border-bottom: 0.2rem solid var(--main-color);
 }
 
-/* User preferred theme */
-@media (prefers-color-scheme: dark) {
-  body {
-    background-color: #2b2b2b;
-    color: #eeeeee;
-  }
+.theme-switch__container {
+  position: absolute;
+  top: 5%;
+  right: 3%;
+}
 
-  a:link,
-  a:visited {
-    color: #eeeeee;
-  }
-
-  .form-control {
-    background-color: #444444;
-    border: 1px solid #444444;
-  }
-
-  .type-selection {
-    background-color: #444444;
-    color: #eeeeee;
-    border: 1px solid #444444;
-    border-right: 1px solid #eeeeee !important;
-  }
-
-  .ace_content {
-    background-color: #444444;
-  }
-
-  .jsoneditor-statusbar,
-  .ace_gutter {
-    background-color: #444444 !important;
-    color: #ffffff !important;
-  }
+.icon-theme {
+  cursor: pointer;
 }
