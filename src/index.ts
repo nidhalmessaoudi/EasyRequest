@@ -3,6 +3,8 @@ import JSONEditor from "jsoneditor";
 import "./styles.css";
 import "jsoneditor/dist/jsoneditor.min.css";
 
+import layout from "./layout";
+
 const config = {
   ROOT: document.getElementById("root")! as HTMLDivElement,
 };
@@ -11,14 +13,47 @@ function render(position: InsertPosition, layout: string) {
   config.ROOT.insertAdjacentHTML(position, layout);
 }
 
+function adjustTheme(edit: boolean) {
+  let theme = localStorage.getItem("theme");
+  if (edit) {
+    theme === "light"
+      ? localStorage.setItem("theme", "dark")
+      : localStorage.setItem("theme", "light");
+  }
+  if (!theme) {
+    const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    theme = isDark ? "dark" : "light";
+    localStorage.setItem("theme", theme);
+    return;
+  }
+  if (theme === "light") {
+    document.body.classList.remove("dark-theme");
+    document.getElementById("author")?.classList.remove("dark-theme");
+    reqEndpoint?.classList.remove("form-control__dark-theme");
+    reqType?.classList.remove("type-selection__dark-theme");
+    const editorDarkStyle = document.getElementById("editor-dark");
+    if (editorDarkStyle) {
+      document.body.removeChild(editorDarkStyle);
+    }
+    return;
+  }
+  document.body.classList.add("dark-theme");
+  document.getElementById("author")?.classList.add("dark-theme");
+  reqEndpoint?.classList.add("form-control__dark-theme");
+  reqType?.classList.add("type-selection__dark-theme");
+  render("beforebegin", layout.editorDarkStyle);
+}
+
 let reqForm: HTMLFormElement;
 let reqType: HTMLSelectElement;
 let reqEndpoint: HTMLInputElement;
 let sendReqBtn: HTMLButtonElement;
 let resultsEditor: JSONEditor;
+let switchTheme: HTMLHeadingElement;
 function loadHandler() {
-  render("afterbegin", initialLayout);
-  render("beforeend", footerLayout);
+  render("afterbegin", layout.initialLayout);
+  render("beforeend", layout.footerLayout);
+  adjustTheme(false);
   const resultContainer = document.getElementById("json-results")!;
   resultsEditor = new JSONEditor(resultContainer, {
     mode: "code",
@@ -28,6 +63,8 @@ function loadHandler() {
   reqType = document.getElementById("req-type")! as HTMLSelectElement;
   reqEndpoint = document.getElementById("req-endpoint")! as HTMLInputElement;
   sendReqBtn = document.getElementById("send-req")! as HTMLButtonElement;
+  switchTheme = document.getElementById("switch-theme") as HTMLHeadingElement;
+  switchTheme.addEventListener("click", () => adjustTheme(true));
   reqForm.addEventListener("submit", submitHandler);
 }
 
@@ -64,60 +101,5 @@ async function submitHandler(e: Event) {
     console.error(err);
   }
 }
-
-const initialLayout = `
-<div class="title-container">
-    <h1 class="title">Easy Request</h1>
-</div>
-<div class="main">
-  <div class="operation-container">
-    <form id="req-form">
-        <div class="input-group mb-3">
-          <select class="type-selection" id="req-type">
-              <option selected>GET</option>
-              <option>POST</option>
-              <option>PUT</option>
-              <option>PATCH</option>
-              <option>DELETE</option>
-          </select>
-          <input 
-              type="text"
-              class="form-control"
-              placeholder="Put The Request Url Here..."
-              id="req-endpoint"
-              required
-          >
-          <button 
-              type="submit"
-              id="send-req"
-              class="btn btn-primary"
-          >
-              Send
-          </button>
-        </div>
-    </form>
-  </div>
-  <div class="req-options-bar">
-    <span class="req-option active-option">Params</span>
-    <span class="req-option">Headers</span>
-    <span class="req-option">Body</span>
-  </div>
-  <div class="req-options-table">
-
-  </div>
-  <div class="result-container" id="json-results"></div>
-</div>
-`;
-
-const footerLayout = `
-<footer class="footer">
-    <p>
-        © Copyright ${new Date().getFullYear()}.
-        Designed and Developed by <a href="https://github.com/nidhalmessaoudi" 
-        target="_blank"
-        >Nidhal Messaoudi</a>.
-    </p>
-</footer>
-`;
 
 window.addEventListener("load", loadHandler);

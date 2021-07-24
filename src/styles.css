@@ -5,21 +5,28 @@
 }
 
 body {
-  background-color: #eeeeee;
   font-family: "Poppins", sans-serif;
-  /* display: flex;
-  justify-content: center;
-  align-items: center; */
   text-align: center;
 }
 
-a {
-  color: black;
+.light-theme {
+  background-color: #eeeeee;
+  color: #000000;
 }
 
-a:link,
-a:visited {
-  color: black;
+.dark-theme {
+  background-color: #2b2b2b;
+  color: #eeeeee;
+}
+
+a:link.light-theme,
+a:visited.light-theme {
+  color: #000000;
+}
+
+a:link .dark-theme,
+a:visited .dark-theme {
+  color: #eeeeee;
 }
 
 .main {
@@ -36,37 +43,81 @@ a:visited {
   height: 23rem;
 }
 
+.form-control__dark-theme {
+  background-color: #444444;
+  border: 1px solid #444444;
+}
+
 .type-selection {
   width: 6rem;
   border: 1px solid #ced4da;
   border-radius: 4px;
   padding: 0.5rem;
   appearance: none;
-  background-color: #fff;
+  background-color: #ffffff;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
   background-repeat: no-repeat;
   background-position: right 0.5rem center;
   background-size: 16px 12px;
 }
 
+.type-selection__dark-theme {
+  background-color: #444444;
+  color: #eeeeee;
+  border: 1px solid #444444;
+  border-right: 1px solid #eeeeee !important;
+}
+
 .type-selection:focus {
   outline: 0;
+  border: 1px solid #0d6efd;
 }
 
 .footer {
   margin: 1.5rem 0;
 }
 
-.req-options-bar {
-  display: flex;
-  justify-content: space-evenly;
+.req-option {
+  cursor: pointer;
+  margin: 0 0.7rem;
+  font-weight: bold;
 }
 
 .active-option {
-  border-bottom: 2px solid #0d6efd;
+  border-bottom: 0.2rem solid #0d6efd;
 }
 
-.req-option {
-  cursor: pointer;
-  font-weight: bold;
+/* User preferred theme */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #2b2b2b;
+    color: #eeeeee;
+  }
+
+  a:link,
+  a:visited {
+    color: #eeeeee;
+  }
+
+  .form-control {
+    background-color: #444444;
+    border: 1px solid #444444;
+  }
+
+  .type-selection {
+    background-color: #444444;
+    color: #eeeeee;
+    border: 1px solid #444444;
+    border-right: 1px solid #eeeeee !important;
+  }
+
+  .ace_content {
+    background-color: #444444;
+  }
+
+  .jsoneditor-statusbar,
+  .ace_gutter {
+    background-color: #444444 !important;
+    color: #ffffff !important;
+  }
 }
