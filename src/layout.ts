@@ -42,12 +42,9 @@ export default {
         <span class="req-option">Headers</span>
         <span class="req-option">Body</span>
     </div>
-    <div class="req-options-table">
-
-    </div>
     <div class="result-container" id="json-results"></div>
     </div>
-    `,
+  `,
 
   footerLayout: `
     <footer class="footer">
@@ -122,5 +119,65 @@ export default {
         0-8.343-3.714-8.343-8.29 0-1.167.242-2.278.681-3.286z"
       />
     </svg>
+  `,
+
+  modalLayout: `
+    <div id="modal" class="modal-main"></div>
+  `,
+
+  overlayLayout: `
+    <div id="overlay">
+      <style>
+        body {
+          overflow: hidden;
+        }
+      </style>
+    </div>
+  `,
+
+  paramsLayout: `
+    <div class="modal-top">
+      <h2 class="modal-brand">Query Params</h2>
+      <span class="close-icon" id="modal-close">&times;</span>
+    </div>
+    <div class="overview">
+      <b>Usage:</b>
+      <ul>
+        <li>
+          You can add your custom query params from here.
+          as <code>Key -> Value</code> pairs.
+        </li>
+        <li>
+          They will be added and formatted directly to your request url
+          as <code>?Key=Value&</code>.
+        </li>
+        <li>
+          You can also put your query params directly in the request url\n
+          and they will appear here as well to be able to edit them\n if you want.
+        </li>
+      </ul>
+    </div>
+    <div class="req-options" id="options-req">
+      <form class="add-param row" id="param-new1">
+        <div class="col-auto">
+          <input type="text" placeholder="Key" name="param-key" class="form-control" />
+        </div>
+        <div class="col-auto">
+          <input type="text" placeholder="Value" name="param-value" class="form-control" />
+        </div>
+        <div class="col-auto">
+          <button type="submit" class="btn btn-outline-secondary">Remove</button>
+        </div>
+      </form>
+      <div class="new-btn__container">
+        <button 
+          type="button" 
+          class="param-btn btn btn-secondary"
+          id="param-form__new"
+        >
+          New
+        </button>
+      </div>
+    </div>
   `,
 };

@@ -86,6 +86,7 @@ export default class Main {
     Main.resultsEditor.set({ Notice: "Results will appear here!" });
     Main.switchTheme.addEventListener("click", () => Main.adjustTheme(true));
     Main.reqForm.addEventListener("submit", Main.submitHandler);
+    window.addEventListener("storage", () => Main.adjustTheme(false));
   }
 
   private static async submitHandler(e: Event) {
