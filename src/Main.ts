@@ -5,13 +5,16 @@ import "jsoneditor/dist/jsoneditor.min.css";
 
 import layout from "./layout";
 
+import QueryParams from "./QueryParams";
+
 export default class Main {
-  private static CONFIG = {
+  public static CONFIG = {
     root: document.getElementById("root")! as HTMLDivElement,
   };
   private static reqForm: HTMLFormElement;
   private static reqType: HTMLSelectElement;
   private static reqEndpoint: HTMLInputElement;
+  private static reqOptionsBar: HTMLDivElement;
   private static sendReqBtn: HTMLButtonElement;
   private static resultsEditor: JSONEditor;
   private static author: HTMLAnchorElement;
@@ -22,8 +25,16 @@ export default class Main {
     window.addEventListener("load", Main.loadHandler);
   }
 
-  private static render(position: InsertPosition, layout: string) {
-    Main.CONFIG.root.insertAdjacentHTML(position, layout);
+  public static render(
+    position: InsertPosition,
+    layout: string,
+    parentEl?: HTMLElement
+  ) {
+    if (!parentEl) {
+      Main.CONFIG.root.insertAdjacentHTML(position, layout);
+      return;
+    }
+    parentEl.insertAdjacentHTML(position, layout);
   }
 
   private static adjustTheme(edit: boolean) {
@@ -74,6 +85,9 @@ export default class Main {
       "req-endpoint"
     )! as HTMLInputElement;
     Main.sendReqBtn = document.getElementById("send-req")! as HTMLButtonElement;
+    Main.reqOptionsBar = document.getElementById(
+      "options-bar"
+    ) as HTMLDivElement;
     Main.author = document.getElementById("author") as HTMLAnchorElement;
     Main.switchTheme = document.getElementById(
       "theme-switch"
@@ -87,6 +101,7 @@ export default class Main {
     Main.switchTheme.addEventListener("click", () => Main.adjustTheme(true));
     Main.reqForm.addEventListener("submit", Main.submitHandler);
     window.addEventListener("storage", () => Main.adjustTheme(false));
+    Main.reqOptionsBar.addEventListener("click", Main.optionsClickHandler);
   }
 
   private static async submitHandler(e: Event) {
@@ -120,6 +135,13 @@ export default class Main {
         Main.resultsEditor.set({ Notice: "Results will appear here!" });
       }, 3000);
       console.error(err);
+    }
+  }
+
+  private static optionsClickHandler(e: Event) {
+    const target = e.target as HTMLElement;
+    if (target?.dataset.name === "params") {
+      QueryParams.main();
     }
   }
 }

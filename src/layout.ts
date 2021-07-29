@@ -37,10 +37,10 @@ export default {
             </div>
         </form>
     </div>
-    <div class="req-options-bar">
-        <span class="req-option active-option">Params</span>
-        <span class="req-option">Headers</span>
-        <span class="req-option">Body</span>
+    <div id="options-bar" class="req-options-bar">
+        <span class="req-option active-option" data-name="params">Params</span>
+        <span class="req-option" data-name="headers">Headers</span>
+        <span class="req-option" data-name="body">Body</span>
     </div>
     <div class="result-container" id="json-results"></div>
     </div>
@@ -122,7 +122,12 @@ export default {
   `,
 
   modalLayout: `
-    <div id="modal" class="modal-main"></div>
+    <div id="modal" class="modal-main light-theme">
+      <div class="modal-top">
+        <h2 id="modal-title" class="modal-brand">Query Params</h2>
+        <span class="close-icon" id="modal-close">&times;</span>
+      </div>
+    </div>
   `,
 
   overlayLayout: `
@@ -136,10 +141,6 @@ export default {
   `,
 
   paramsLayout: `
-    <div class="modal-top">
-      <h2 class="modal-brand">Query Params</h2>
-      <span class="close-icon" id="modal-close">&times;</span>
-    </div>
     <div class="overview">
       <b>Usage:</b>
       <ul>
