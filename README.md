@@ -2,11 +2,11 @@
 A web client for sending HTTP requests directly from your browser.
 
 ## Current Version
-<a href="https://easyrequest.netlify.app"><b>v0.1.0 Beta for Web</b></a>
+<a href="https://easyrequest.netlify.app"><b>v0.1.2 Beta for Web</b></a>
 
 ## Tasks
 <ol>
-  <li>Setup the project with webpack ✔</li>
+  <li>Setup the project with webpack ✔️</li>
   <li>Add the layout ✔</li>
   <li>Integrate jsoneditor ✔</li>
   <li>Handle the HTTP Request ✔</li>
