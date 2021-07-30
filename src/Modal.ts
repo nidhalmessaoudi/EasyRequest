@@ -14,12 +14,15 @@ export default class Modal {
     Modal.overlay = document.getElementById("overlay") as HTMLDivElement;
     Modal.closeBtn.addEventListener("click", Modal.closeHandler);
     Modal.overlay.addEventListener("click", Modal.closeHandler);
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        Modal.closeHandler();
-      }
-    });
+    document.addEventListener("keydown", Modal.escapePressHandler);
+  }
+
+  private static escapePressHandler(e: KeyboardEvent) {
+    if (e.key === "Escape") {
+      e.preventDefault();
+      Modal.closeHandler();
+      document.removeEventListener("keydown", Modal.escapePressHandler);
+    }
   }
 
   private static closeHandler() {

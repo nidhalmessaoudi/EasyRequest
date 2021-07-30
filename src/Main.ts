@@ -13,7 +13,7 @@ export default class Main {
   };
   private static reqForm: HTMLFormElement;
   private static reqType: HTMLSelectElement;
-  private static reqEndpoint: HTMLInputElement;
+  public static reqEndpoint: HTMLInputElement;
   private static reqOptionsBar: HTMLDivElement;
   private static sendReqBtn: HTMLButtonElement;
   private static resultsEditor: JSONEditor;

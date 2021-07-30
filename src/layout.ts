@@ -159,17 +159,7 @@ export default {
       </ul>
     </div>
     <div class="req-options" id="options-req">
-      <form class="add-param row" id="param-new1">
-        <div class="col-auto">
-          <input type="text" placeholder="Key" name="param-key" class="form-control" />
-        </div>
-        <div class="col-auto">
-          <input type="text" placeholder="Value" name="param-value" class="form-control" />
-        </div>
-        <div class="col-auto">
-          <button type="submit" class="btn btn-outline-secondary">Remove</button>
-        </div>
-      </form>
+      <div id="param-forms"></div>
       <div class="new-btn__container">
         <button 
           type="button" 
@@ -180,5 +170,34 @@ export default {
         </button>
       </div>
     </div>
+  `,
+
+  paramFormLayout: `
+  <form class="add-param row">
+    <div class="col-auto">
+      <input type="text" placeholder="Key" name="param-key" class="form-control" />
+    </div>
+    <div class="col-auto">
+      <input type="text" placeholder="Value" name="param-value" class="form-control" />
+    </div>
+    <div class="col-auto">
+      <button 
+        type="submit" 
+        name="param-toggle" 
+        class="btn btn-outline-secondary"
+      >
+      Add
+      </button>
+    </div>
+    <div class="col-auto param-remove__btn">
+      <button
+        type="button"
+        name="param-remove"
+        class="param-remove btn btn-outline-danger"
+      >
+      Remove
+      </button>
+    </div>
+  </form>
   `,
 };

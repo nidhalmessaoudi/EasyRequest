@@ -158,3 +158,11 @@ code {
 .new-btn__container {
   margin: 1rem 0;
 }
+
+.add-param {
+  margin-bottom: 1rem;
+}
+
+.param-remove__btn {
+  display: none;
+}
