@@ -205,11 +205,9 @@ export default class QueryParams extends Modal {
   }
 
   private static onChange() {
-    if (!QueryParams.queryParams.length) return;
     const reqArr = Main.reqEndpoint.value.split("?");
-    if (reqArr.length >= 2) {
-      Main.reqEndpoint.value = reqArr[0];
-    }
+    Main.reqEndpoint.value = reqArr[0];
+    if (!QueryParams.queryParams.length) return;
     const queryString =
       "?" +
       QueryParams.queryParams
