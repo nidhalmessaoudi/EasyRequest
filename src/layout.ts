@@ -122,7 +122,7 @@ export default {
   `,
 
   modalLayout: `
-    <div id="modal" class="modal-main light-theme">
+    <div id="modal" class="modal-main">
       <div class="modal-top">
         <h2 id="modal-title" class="modal-brand">Query Params</h2>
         <span class="close-icon" id="modal-close">&times;</span>
@@ -199,5 +199,10 @@ export default {
       </button>
     </div>
   </form>
+  `,
+  paramFormErrorLayout: `
+    <div class="param-error col-auto">
+        <button class="param-error__btn btn btn-outline-danger" disabled></button>
+    </div>
   `,
 };

@@ -6,7 +6,7 @@ export default class Modal {
   private static closeBtn: HTMLSpanElement;
   private static overlay: HTMLDivElement;
 
-  public static main() {
+  protected static main() {
     Main.render("afterbegin", layout.modalLayout);
     Main.render("afterbegin", layout.overlayLayout);
     Modal.modal = document.getElementById("modal") as HTMLDivElement;

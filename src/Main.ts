@@ -143,5 +143,16 @@ export default class Main {
     if (target?.dataset.name === "params") {
       QueryParams.main();
     }
+    Main.adjustModalTheme();
+  }
+
+  private static adjustModalTheme() {
+    const theme = localStorage.getItem("theme");
+    const modal = document.getElementById("modal");
+    if (theme === "dark") {
+      modal?.classList.add("dark-theme");
+    } else {
+      modal?.classList.add("light-theme");
+    }
   }
 }

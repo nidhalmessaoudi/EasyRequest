@@ -2,15 +2,21 @@ import layout from "./layout";
 import Main from "./Main";
 import Modal from "./Modal";
 
-export default class QueryParams {
+interface queryParam {
+  key: string;
+  value: string;
+}
+
+export default class QueryParams extends Modal {
   private static title = "Query Params";
+  private static queryParams: queryParam[] = [];
   private static queryParamsContainer: HTMLDivElement;
   private static formsParent: HTMLDivElement;
   private static newParamBtn: HTMLButtonElement;
 
-  public static main() {
-    Modal.main();
-    Main.render("beforeend", layout.paramsLayout, Modal.modal);
+  public static override main() {
+    super.main();
+    Main.render("beforeend", layout.paramsLayout, QueryParams.modal);
     const modalTitle = document.getElementById("modal-title")!;
     modalTitle.textContent = QueryParams.title;
     QueryParams.queryParamsContainer = document.getElementById(
@@ -23,7 +29,7 @@ export default class QueryParams {
       "param-form__new"
     )! as HTMLButtonElement;
 
-    QueryParams.renderFoundParams();
+    QueryParams.renderParams();
     QueryParams.renderEmptyParam();
 
     QueryParams.queryParamsContainer.addEventListener(
@@ -47,11 +53,20 @@ export default class QueryParams {
     }
   }
 
-  private static renderFoundParams() {
+  private static pushFoundParams() {
+    QueryParams.queryParams = [];
     const reqUrlArr = Main.reqEndpoint.value.split("?");
     if (reqUrlArr.length < 2) return;
     reqUrlArr[1].split("&").forEach((param) => {
       const [key, value] = param.split("=");
+      QueryParams.queryParams.push({ key, value });
+    });
+  }
+
+  private static renderParams() {
+    QueryParams.pushFoundParams();
+    QueryParams.queryParams.forEach((param) => {
+      const { key, value } = param;
       Main.render("beforeend", layout.paramFormLayout, QueryParams.formsParent);
       const renderedForms = document.getElementsByClassName("add-param");
       const currentForm = renderedForms[renderedForms.length - 1];
@@ -71,6 +86,7 @@ export default class QueryParams {
       removeBtnContainer.style.display = "inline-block";
       keyInput.value = key;
       valueInput.value = value;
+      keyInput.readOnly = true;
     });
   }
 
@@ -96,21 +112,70 @@ export default class QueryParams {
     ) as HTMLButtonElement;
     const paramKey = paramKeyEl.value;
     const paramValue = paramValueEl.value;
-    const reqEndpointVal = Main.reqEndpoint.value;
-    let queryParam = `?${paramKey}=${paramValue}`;
-    if (reqEndpointVal.includes("?")) {
-      queryParam = queryParam.replace("?", "&");
+    if (!paramKey || !paramValue) return;
+    if (
+      QueryParams.queryParams.some(
+        (el) => el.key === paramKey && el.value === paramValue
+      )
+    ) {
+      return;
     }
-    Main.reqEndpoint.value += queryParam;
+    const paramExist = QueryParams.queryParams.find(
+      (el) => el.key === paramKey
+    );
+    if (paramExist) {
+      if (submitBtn.textContent?.trim() === "Add") {
+        submitBtn.disabled = true;
+        Main.render("beforeend", layout.paramFormErrorLayout, submittedForm);
+        const paramErrorEl = submittedForm.querySelector(
+          ".param-error"
+        )! as HTMLDivElement;
+        const paramErrorBtn = submittedForm.querySelector(
+          ".param-error__btn"
+        )! as HTMLButtonElement;
+        paramErrorBtn.textContent = "Already Assigned!";
+        setTimeout(() => {
+          submittedForm.removeChild(paramErrorEl);
+          submitBtn.disabled = false;
+        }, 2000);
+        return;
+      }
+      QueryParams.editParam(paramExist, paramValue);
+      return;
+    }
+    QueryParams.queryParams.push({ key: paramKey, value: paramValue });
     submitBtn.blur();
     submitBtn.textContent = "Edit";
     removeBtnContainer.style.display = "inline-block";
+    paramKeyEl.readOnly = true;
+    QueryParams.onChange();
   }
 
   private static newParamHandler() {
+    const renderedForms =
+      QueryParams.formsParent.querySelectorAll(".add-param");
+    const lastRenderedForm = renderedForms[renderedForms.length - 1];
+    const formInputs: HTMLInputElement[] = [];
+    formInputs.push(
+      lastRenderedForm.querySelector(
+        "input[name='param-key']"
+      ) as HTMLInputElement
+    );
+    formInputs.push(
+      lastRenderedForm.querySelector(
+        "input[name='param-value']"
+      ) as HTMLInputElement
+    );
+    let found = false;
+    for (let input of formInputs) {
+      if (input.value) continue;
+      input.focus();
+      found = true;
+      break;
+    }
+    if (found) return;
     QueryParams.renderEmptyParam();
     QueryParams.newParamBtn.blur();
-    console.log("Hello");
   }
 
   private static removeParamHandler(target: HTMLElement) {
@@ -121,15 +186,35 @@ export default class QueryParams {
     const paramValueEl = currentForm.querySelector(
       "input[name='param-value']"
     ) as HTMLInputElement;
-    let param = `?${paramKeyEl.value}=${paramValueEl.value}`;
-    const currentReqUrl = Main.reqEndpoint.value;
-    const paramStartIndex = currentReqUrl.indexOf(paramKeyEl.value) - 1;
-    if (currentReqUrl[paramStartIndex] === "&") {
-      param = param.replace("?", "&");
-      Main.reqEndpoint.value = currentReqUrl.replace(param, "?");
-    } else {
-      Main.reqEndpoint.value = currentReqUrl.replace(param, "");
-    }
+    const paramKey = paramKeyEl.value;
+    const paramValue = paramValueEl.value;
+
+    QueryParams.queryParams = QueryParams.queryParams.filter((param) => {
+      return param.key !== paramKey && param.value !== paramValue;
+    });
+
     QueryParams.formsParent.removeChild(currentForm);
+    QueryParams.onChange();
+  }
+
+  private static editParam(oldParamObj: queryParam, newParamValue: string) {
+    QueryParams.queryParams[
+      QueryParams.queryParams.indexOf(oldParamObj)
+    ].value = newParamValue;
+    QueryParams.onChange();
+  }
+
+  private static onChange() {
+    if (!QueryParams.queryParams.length) return;
+    const reqArr = Main.reqEndpoint.value.split("?");
+    if (reqArr.length >= 2) {
+      Main.reqEndpoint.value = reqArr[0];
+    }
+    const queryString =
+      "?" +
+      QueryParams.queryParams
+        .map((param) => `${param.key}=${param.value}`)
+        .join("&");
+    Main.reqEndpoint.value += queryString;
   }
 }
