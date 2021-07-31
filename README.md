@@ -14,7 +14,7 @@ A web client for sending HTTP requests directly from your browser.
   <li>Display results ✔</li>
   <li>Style the elements ✔</li>
   <li>Release and deploy v0.1.0 Beta for web ✔</li>
-  <li>Add request params 🕒</li>
+  <li>Add request params ✔</li>
   <li>Add request headers 🕒</li>
   <li>Add request body 🕒</li>
   <li>Error handling 🕒</li>
