@@ -67,6 +67,10 @@ code {
   margin: 4rem 0 2rem 0;
 }
 
+.operation-container {
+  margin-bottom: 2rem;
+}
+
 .result-container {
   margin-top: 2rem;
   width: 100%;
@@ -108,12 +112,13 @@ code {
 
 .req-option {
   cursor: pointer;
+  user-select: none;
+  text-transform: uppercase;
   margin: 0 0.7rem;
   font-weight: bold;
-}
-
-.active-option {
-  border-bottom: 0.2rem solid var(--main-color);
+  border: 1px solid var(--main-color);
+  padding: 0.5rem 1rem;
+  border-radius: 10rem;
 }
 
 .theme-switch__container {
@@ -159,10 +164,10 @@ code {
   margin: 1rem 0;
 }
 
-.add-param {
+.add {
   margin-bottom: 1rem;
 }
 
-.param-remove__btn {
+.remove-btn {
   display: none;
 }

@@ -16,9 +16,8 @@ export default class QueryParams extends Modal {
 
   public static override main() {
     super.main();
+    QueryParams.modalTitle.textContent = QueryParams.title;
     Main.render("beforeend", layout.paramsLayout, QueryParams.modal);
-    const modalTitle = document.getElementById("modal-title")!;
-    modalTitle.textContent = QueryParams.title;
     QueryParams.queryParamsContainer = document.getElementById(
       "options-req"
     ) as HTMLDivElement;
@@ -110,8 +109,8 @@ export default class QueryParams extends Modal {
     const removeBtnContainer = submittedForm.querySelector(
       ".param-remove__btn"
     ) as HTMLButtonElement;
-    const paramKey = paramKeyEl.value;
-    const paramValue = paramValueEl.value;
+    const paramKey = paramKeyEl.value.trim();
+    const paramValue = paramValueEl.value.trim();
     if (!paramKey || !paramValue) return;
     if (
       QueryParams.queryParams.some(
@@ -126,12 +125,12 @@ export default class QueryParams extends Modal {
     if (paramExist) {
       if (submitBtn.textContent?.trim() === "Add") {
         submitBtn.disabled = true;
-        Main.render("beforeend", layout.paramFormErrorLayout, submittedForm);
+        Main.render("beforeend", layout.formErrorLayout, submittedForm);
         const paramErrorEl = submittedForm.querySelector(
-          ".param-error"
+          ".option-error"
         )! as HTMLDivElement;
         const paramErrorBtn = submittedForm.querySelector(
-          ".param-error__btn"
+          ".option-error__btn"
         )! as HTMLButtonElement;
         paramErrorBtn.textContent = "Already Assigned!";
         setTimeout(() => {
@@ -154,26 +153,28 @@ export default class QueryParams extends Modal {
   private static newParamHandler() {
     const renderedForms =
       QueryParams.formsParent.querySelectorAll(".add-param");
-    const lastRenderedForm = renderedForms[renderedForms.length - 1];
-    const formInputs: HTMLInputElement[] = [];
-    formInputs.push(
-      lastRenderedForm.querySelector(
-        "input[name='param-key']"
-      ) as HTMLInputElement
-    );
-    formInputs.push(
-      lastRenderedForm.querySelector(
-        "input[name='param-value']"
-      ) as HTMLInputElement
-    );
-    let found = false;
-    for (let input of formInputs) {
-      if (input.value) continue;
-      input.focus();
-      found = true;
-      break;
+    if (renderedForms.length) {
+      const lastRenderedForm = renderedForms[renderedForms.length - 1];
+      const formInputs: HTMLInputElement[] = [];
+      formInputs.push(
+        lastRenderedForm.querySelector(
+          "input[name='param-key']"
+        ) as HTMLInputElement
+      );
+      formInputs.push(
+        lastRenderedForm.querySelector(
+          "input[name='param-value']"
+        ) as HTMLInputElement
+      );
+      let found = false;
+      for (let input of formInputs) {
+        if (input.value) continue;
+        input.focus();
+        found = true;
+        break;
+      }
+      if (found) return;
     }
-    if (found) return;
     QueryParams.renderEmptyParam();
     QueryParams.newParamBtn.blur();
   }

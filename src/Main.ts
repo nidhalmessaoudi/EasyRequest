@@ -6,14 +6,17 @@ import "jsoneditor/dist/jsoneditor.min.css";
 import layout from "./layout";
 
 import QueryParams from "./QueryParams";
+import ReqHeaders from "./Headers";
+import Body from "./Body";
 
 export default class Main {
   public static CONFIG = {
     root: document.getElementById("root")! as HTMLDivElement,
   };
+  public static reqEndpoint: HTMLInputElement;
+  public static headers: { [headerName: string]: string };
   private static reqForm: HTMLFormElement;
   private static reqType: HTMLSelectElement;
-  public static reqEndpoint: HTMLInputElement;
   private static reqOptionsBar: HTMLDivElement;
   private static sendReqBtn: HTMLButtonElement;
   private static resultsEditor: JSONEditor;
@@ -23,6 +26,7 @@ export default class Main {
 
   public static main() {
     window.addEventListener("load", Main.loadHandler);
+    ReqHeaders.onChange();
   }
 
   public static render(
@@ -111,9 +115,10 @@ export default class Main {
       Main.sendReqBtn.textContent = "Sending";
       Main.sendReqBtn.disabled = true;
       Main.resultsEditor.set({ Notice: "Loading data..." });
-
+      console.log(Main.headers);
       const req = await fetch(Main.reqEndpoint.value, {
         method: Main.reqType.value,
+        headers: Main.headers,
       });
 
       const res = await req.json();
@@ -140,8 +145,16 @@ export default class Main {
 
   private static optionsClickHandler(e: Event) {
     const target = e.target as HTMLElement;
-    if (target?.dataset.name === "params") {
-      QueryParams.main();
+    switch (target?.dataset.name) {
+      case "params":
+        QueryParams.main();
+        break;
+      case "headers":
+        ReqHeaders.main();
+        break;
+      case "body":
+        Body.main();
+        break;
     }
     Main.adjustModalTheme();
   }

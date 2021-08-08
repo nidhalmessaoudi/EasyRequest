@@ -38,7 +38,7 @@ export default {
         </form>
     </div>
     <div id="options-bar" class="req-options-bar">
-        <span class="req-option active-option" data-name="params">Params</span>
+        <span class="req-option" data-name="params">Params</span>
         <span class="req-option" data-name="headers">Headers</span>
         <span class="req-option" data-name="body">Body</span>
     </div>
@@ -145,7 +145,7 @@ export default {
       <b>Usage:</b>
       <ul>
         <li>
-          You can add your custom query params from here.
+          You can add your custom query params from here
           as <code>Key -> Value</code> pairs.
         </li>
         <li>
@@ -153,8 +153,8 @@ export default {
           as <code>?Key=Value&</code>.
         </li>
         <li>
-          You can also put your query params directly in the request url\n
-          and they will appear here as well to be able to edit them\n if you want.
+          You can also put your query params directly in the request url <br>
+          and they will appear here as well to be able to edit them if you want.
         </li>
       </ul>
     </div>
@@ -173,7 +173,7 @@ export default {
   `,
 
   paramFormLayout: `
-  <form class="add-param row">
+  <form class="add add-param row">
     <div class="col-auto">
       <input type="text" placeholder="Key" name="param-key" class="form-control" />
     </div>
@@ -189,7 +189,7 @@ export default {
       Add
       </button>
     </div>
-    <div class="col-auto param-remove__btn">
+    <div class="col-auto remove-btn param-remove__btn">
       <button
         type="button"
         name="param-remove"
@@ -200,9 +200,68 @@ export default {
     </div>
   </form>
   `,
-  paramFormErrorLayout: `
-    <div class="param-error col-auto">
-        <button class="param-error__btn btn btn-outline-danger" disabled></button>
+
+  formErrorLayout: `
+    <div class="option-error col-auto">
+        <button class="option-error__btn btn btn-outline-danger" disabled></button>
     </div>
+  `,
+
+  headersLayout: `
+    <div class="overview">
+      <b>Usage:</b>
+      <ul>
+        <li>
+          You can add your custom headers from here
+          as <code>Header-Name -> Header-Value</code> pairs. <br> E.g: 
+          <code>Content-Type -> application/json</code>.
+        </li>
+        <li>
+          They will be added and formatted
+          directly to the request headers.
+        </li>
+      </ul>
+    </div>
+    <div class="req-options" id="options-req">
+      <div id="header-forms"></div>
+      <div class="new-btn__container">
+        <button 
+          type="button" 
+          class="header-btn btn btn-secondary"
+          id="header-form__new"
+        >
+          New
+        </button>
+      </div>
+    </div>
+  `,
+
+  headerFormLayout: `
+    <form class="add add-header row">
+      <div class="col-auto">
+        <input type="text" placeholder="Header-Name" name="header-key" class="form-control" />
+      </div>
+      <div class="col-auto">
+        <input type="text" placeholder="Header-Value" name="header-value" class="form-control" />
+      </div>
+      <div class="col-auto">
+        <button 
+          type="submit" 
+          name="header-toggle" 
+          class="btn btn-outline-secondary"
+        >
+        Add
+        </button>
+      </div>
+      <div class="col-auto remove-btn header-remove__btn">
+        <button
+          type="button"
+          name="header-remove"
+          class="header-remove btn btn-outline-danger"
+        >
+        Remove
+        </button>
+      </div>
+    </form>
   `,
 };
