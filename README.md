@@ -2,7 +2,7 @@
 A web client for sending HTTP requests directly from your browser.
 
 ## Current Version
-<a href="https://easyrequest.netlify.app"><b>v0.1.3 Beta for Web</b></a>
+<a href="https://easyrequest.netlify.app"><b>v0.1.4 Beta for Web</b></a>
 
 ## Version capabilities
 <ul>
@@ -25,7 +25,7 @@ A web client for sending HTTP requests directly from your browser.
   <li>Style the elements ✔</li>
   <li>Release and deploy v0.1.0 Beta for web ✔</li>
   <li>Add request params ✔</li>
-  <li>Add request headers 🕒</li>
+  <li>Add request headers ✔</li>
   <li>Add request body 🕒</li>
   <li>Error handling 🕒</li>
   <li>Provide usage guide 🕒</li>
