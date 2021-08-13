@@ -124,7 +124,7 @@ export default {
   modalLayout: `
     <div id="modal" class="modal-main">
       <div class="modal-top">
-        <h2 id="modal-title" class="modal-brand">Query Params</h2>
+        <h2 id="modal-title" class="modal-brand"></h2>
         <span class="close-icon" id="modal-close">&times;</span>
       </div>
     </div>
@@ -263,5 +263,43 @@ export default {
         </button>
       </div>
     </form>
+  `,
+
+  bodyOverviewLayout: `
+    <div class="overview">
+      <b>Usage:</b>
+      <ul>
+        <li>
+          First of all, Choose the type of body you want to send
+          along with your request.
+        </li>
+        <li>
+          If you choose json, the <code>Content-Type</code> header will be
+          added directly to the request headers <br> specifying 
+          <code>application/json</code>. Other than that you can 
+          edit the type on the request headers.
+        </li>
+      </ul>
+      <div class="proceed-container">
+        <button id="body-proceed" class="btn btn-secondary">Okay</button>
+      </div>
+    </div>
+  `,
+
+  bodyLayout: `
+    <div class="req-body">
+      <div class="req-body__action">
+        <div id="body-type__switch" class="body-types">
+          <span id="json__body-type" class="body-type body-type__active">JSON</span>
+          <span id="other__body-type" class="body-type">Other</span>
+        </div>
+        <div class="body-save">
+          <button id="save-body__btn" class="btn btn-primary">Save</button>
+        </div>
+      </div>
+      <div id="body-editor" class="editor">
+        <textarea class="req-body__editor form-control" rows="11" id="req-body__content" placeholder="Put your request body here..."></textarea>
+      </div>
+    </div>
   `,
 };

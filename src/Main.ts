@@ -15,6 +15,7 @@ export default class Main {
   };
   public static reqEndpoint: HTMLInputElement;
   public static headers: { [headerName: string]: string };
+  public static body: string;
   private static reqForm: HTMLFormElement;
   private static reqType: HTMLSelectElement;
   private static reqOptionsBar: HTMLDivElement;
@@ -119,6 +120,7 @@ export default class Main {
       const req = await fetch(Main.reqEndpoint.value, {
         method: Main.reqType.value,
         headers: Main.headers,
+        body: Main.body,
       });
 
       const res = await req.json();

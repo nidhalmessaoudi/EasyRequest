@@ -171,3 +171,41 @@ code {
 .remove-btn {
   display: none;
 }
+
+.proceed-container {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.req-body__action {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.body-types {
+  user-select: none;
+}
+
+.body-type {
+  opacity: 0.6;
+  margin: 0 0.5rem;
+  cursor: pointer;
+}
+
+.body-type__active {
+  opacity: 1;
+  border-bottom: 2px solid var(--main-color);
+}
+
+.editor {
+  margin-top: 1rem;
+}
+
+.req-body__editor {
+  width: 100%;
+  font-family: "dejavu sans mono", "droid sans mono", consolas, monaco,
+    "lucida console", "courier new", courier, monospace, sans-serif;
+  font-size: 0.9rem;
+}
