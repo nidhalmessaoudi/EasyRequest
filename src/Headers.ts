@@ -8,7 +8,7 @@ export default class ReqHeaders extends Modal {
   private static formsParent: HTMLDivElement;
   private static newHeaderBtn: HTMLButtonElement;
   public static headers = [
-    ["User-Agent", "EasyRequest-Runtime/0.1.4-beta"],
+    ["User-Agent", "EasyRequest-Runtime/0.1.5-beta"],
     ["Accept", "*/*"],
   ];
 
@@ -193,6 +193,10 @@ export default class ReqHeaders extends Modal {
     ReqHeaders.headers[ReqHeaders.headers.indexOf(oldHeaderObj)][1] =
       newHeaderValue;
     ReqHeaders.onChange();
+  }
+
+  public static addHeader(headerName: string, headerValue: string) {
+    ReqHeaders.headers.push([headerName, headerValue]);
   }
 
   public static onChange() {

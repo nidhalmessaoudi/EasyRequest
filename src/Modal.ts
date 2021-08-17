@@ -11,6 +11,7 @@ export default class Modal {
     Main.render("afterbegin", layout.modalLayout);
     Main.render("afterbegin", layout.overlayLayout);
     Modal.modal = document.getElementById("modal") as HTMLDivElement;
+    Modal.adjustTheme();
     Modal.closeBtn = document.getElementById("modal-close") as HTMLSpanElement;
     Modal.modalTitle = document.getElementById(
       "modal-title"
@@ -32,5 +33,14 @@ export default class Modal {
   private static closeHandler() {
     Main.CONFIG.root.removeChild(Modal.modal);
     Main.CONFIG.root.removeChild(Modal.overlay);
+  }
+
+  private static adjustTheme() {
+    const theme = localStorage.getItem("theme");
+    if (theme === "light") {
+      Modal.modal.classList.add("light-theme");
+    } else {
+      Modal.modal.classList.add("dark-theme");
+    }
   }
 }

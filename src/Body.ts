@@ -1,4 +1,5 @@
 import JSONEditor from "jsoneditor";
+import ReqHeaders from "./Headers";
 
 import layout from "./layout";
 import Main from "./Main";
@@ -105,6 +106,7 @@ export default class Body extends Modal {
       case "json":
         Body.editorContent.type = "json";
         Body.editorContent.value = Body.jsonEditor.get();
+        ReqHeaders.addHeader("Content-Type", "application/json");
         break;
       case "other":
         Body.editorContent.type = "other";
@@ -117,7 +119,7 @@ export default class Body extends Modal {
     setTimeout(() => {
       Body.saveBodyBtn.textContent = "Save";
       Body.saveBodyBtn.disabled = false;
-    }, 500);
+    }, 1000);
   }
 
   private static toggleActiveType() {

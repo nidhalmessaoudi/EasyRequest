@@ -2,12 +2,15 @@ import JSONEditor from "jsoneditor";
 
 import "./styles.css";
 import "jsoneditor/dist/jsoneditor.min.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 import layout from "./layout";
 
 import QueryParams from "./QueryParams";
 import ReqHeaders from "./Headers";
 import Body from "./Body";
+import Popup from "./Popup";
+import ReqError from "./ReqError";
 
 export default class Main {
   public static CONFIG = {
@@ -24,6 +27,7 @@ export default class Main {
   private static author: HTMLAnchorElement;
   private static switchTheme: HTMLSpanElement;
   private static themeIcon: HTMLElement;
+  private static timeoutMsg = "The server takes too long to respond!";
 
   public static main() {
     window.addEventListener("load", Main.loadHandler);
@@ -78,7 +82,8 @@ export default class Main {
       Main.reqEndpoint?.classList.add("form-control__dark-theme");
       Main.render("beforebegin", layout.editorDarkStyle);
     }
-    Main.themeIcon = document.querySelector(".bi") as HTMLElement;
+    Main.themeIcon = document.getElementById("bi-theme") as HTMLElement;
+    Popup.adjustTheme();
   }
 
   private static loadHandler() {
@@ -113,35 +118,65 @@ export default class Main {
     try {
       e.preventDefault();
 
+      Popup.close(true);
+
       Main.sendReqBtn.textContent = "Sending";
       Main.sendReqBtn.disabled = true;
       Main.resultsEditor.set({ Notice: "Loading data..." });
-      console.log(Main.headers);
-      const req = await fetch(Main.reqEndpoint.value, {
+
+      const reqTimer = Main.makeTimer(5);
+
+      const req = fetch(Main.reqEndpoint.value, {
         method: Main.reqType.value,
         headers: Main.headers,
         body: Main.body,
       });
 
-      const res = await req.json();
+      const timeBeforeSend = new Date().getTime();
+      const resOrTimer = (await Promise.race([req, reqTimer])) as
+        | Response
+        | string;
+
+      const timeAfterSend = new Date().getTime();
+
+      if (typeof resOrTimer === "string") {
+        throw new ReqError(Main.timeoutMsg);
+      }
+
+      let res;
+      if (resOrTimer instanceof Response) {
+        res = await resOrTimer.json();
+      }
+
+      const statusCode = resOrTimer.status;
+      const resSize = new TextEncoder().encode(JSON.stringify(res)).length;
+      const reqDuration = timeAfterSend - timeBeforeSend;
+      const reqInfo = {
+        Status: String(statusCode),
+        Time: String(reqDuration),
+        Size: (resSize / 1024).toFixed(2),
+      };
+      if (!resOrTimer.ok) {
+        throw new ReqError("The server returns a no OK status!", reqInfo);
+      }
+
+      Popup.main(true, reqInfo);
 
       Main.sendReqBtn.textContent = "Send";
       Main.sendReqBtn.disabled = false;
       Main.resultsEditor.set(res);
       Main.resultsEditor.focus();
     } catch (err) {
-      Main.sendReqBtn.textContent = "Failed";
-      Main.sendReqBtn.style.backgroundColor = "#dc3545";
-      Main.sendReqBtn.style.borderColor = "#dc3545";
-      Main.resultsEditor.set({ Notice: "failed to load data!" });
-      setTimeout(() => {
-        Main.sendReqBtn.style.backgroundColor = "#0d6efd";
-        Main.sendReqBtn.style.borderColor = "#0d6efd";
-        Main.sendReqBtn.disabled = false;
-        Main.sendReqBtn.textContent = "Send";
-        Main.resultsEditor.set({ Notice: "Results will appear here!" });
-      }, 3000);
-      console.error(err);
+      let msg = err.message;
+      if (err.name === "TypeError") {
+        msg = "Failed to send the request! Check your connection.";
+      }
+      if (err.reqInfo) {
+        Popup.main(false, err.reqInfo);
+      } else {
+        Popup.main(false, undefined, msg);
+      }
+      Main.styleInfail();
     }
   }
 
@@ -158,16 +193,19 @@ export default class Main {
         Body.main();
         break;
     }
-    Main.adjustModalTheme();
   }
 
-  private static adjustModalTheme() {
-    const theme = localStorage.getItem("theme");
-    const modal = document.getElementById("modal");
-    if (theme === "dark") {
-      modal?.classList.add("dark-theme");
-    } else {
-      modal?.classList.add("light-theme");
-    }
+  private static makeTimer(sec: number) {
+    return new Promise((res) => {
+      setTimeout(() => {
+        res("Timer finished!");
+      }, sec * 1000);
+    });
+  }
+
+  private static styleInfail() {
+    Main.resultsEditor.set({ Notice: "failed to load data!" });
+    Main.sendReqBtn.disabled = false;
+    Main.sendReqBtn.textContent = "Send";
   }
 }
