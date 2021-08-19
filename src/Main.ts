@@ -182,7 +182,6 @@ export default class Main {
       } else {
         Popup.main(false, undefined, msg);
       }
-      console.log(err.noDefault);
       Main.styleInfail(err.noDefault ? false : true);
     }
   }
