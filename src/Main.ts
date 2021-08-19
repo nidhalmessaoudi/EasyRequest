@@ -1,4 +1,5 @@
 import JSONEditor from "jsoneditor";
+import validUrl from "valid-url";
 
 import "./styles.css";
 import "jsoneditor/dist/jsoneditor.min.css";
@@ -120,13 +121,20 @@ export default class Main {
 
       Popup.close(true);
 
+      const reqUrl = Main.reqEndpoint.value;
+
+      if (!validUrl.isWebUri(reqUrl)) {
+        Popup.main(false, undefined, "Unvalid request url!");
+        return;
+      }
+
       Main.sendReqBtn.textContent = "Sending";
       Main.sendReqBtn.disabled = true;
       Main.resultsEditor.set({ Notice: "Loading data..." });
 
       const reqTimer = Main.makeTimer(5);
 
-      const req = fetch(Main.reqEndpoint.value, {
+      const req = fetch(reqUrl, {
         method: Main.reqType.value,
         headers: Main.headers,
         body: Main.body,
@@ -143,21 +151,19 @@ export default class Main {
         throw new ReqError(Main.timeoutMsg);
       }
 
+      const reqDuration = timeAfterSend - timeBeforeSend;
       let res;
       if (resOrTimer instanceof Response) {
-        res = await resOrTimer.json();
+        res = await Main.handleResponse(resOrTimer, reqDuration);
       }
 
-      const statusCode = resOrTimer.status;
-      const resSize = new TextEncoder().encode(JSON.stringify(res)).length;
-      const reqDuration = timeAfterSend - timeBeforeSend;
-      const reqInfo = {
-        Status: String(statusCode),
-        Time: String(reqDuration),
-        Size: (resSize / 1024).toFixed(2),
-      };
+      const reqInfo = Main.getReqInfo(resOrTimer, reqDuration, res);
+
       if (!resOrTimer.ok) {
-        throw new ReqError("The server returns a no OK status!", reqInfo);
+        if (res) {
+          Main.resultsEditor.set(res);
+        }
+        throw new ReqError("The server returns a no OK status!", reqInfo, true);
       }
 
       Popup.main(true, reqInfo);
@@ -176,7 +182,37 @@ export default class Main {
       } else {
         Popup.main(false, undefined, msg);
       }
-      Main.styleInfail();
+      console.log(err.noDefault);
+      Main.styleInfail(err.noDefault ? false : true);
+    }
+  }
+
+  private static getReqInfo(
+    fullRes: Response,
+    reqTime: number,
+    resBody?: JSON
+  ) {
+    const statusCode = fullRes.status;
+    const resSize = new TextEncoder().encode(
+      JSON.stringify(resBody ? resBody : fullRes)
+    ).length;
+    return {
+      Status: String(statusCode),
+      Time: String(reqTime),
+      Size: (resSize / 1024).toFixed(2),
+    };
+  }
+
+  private static async handleResponse(res: Response, reqTime: number) {
+    try {
+      const resOnText = await res.text();
+      const resOnJson = JSON.parse(resOnText);
+      return resOnJson;
+    } catch (err) {
+      throw new ReqError(
+        "ParseError: Did not receive JSON!",
+        Main.getReqInfo(res, reqTime)
+      );
     }
   }
 
@@ -203,8 +239,10 @@ export default class Main {
     });
   }
 
-  private static styleInfail() {
-    Main.resultsEditor.set({ Notice: "failed to load data!" });
+  private static styleInfail(editOnEditor = true) {
+    if (editOnEditor) {
+      Main.resultsEditor.set({ Notice: "failed to load data!" });
+    }
     Main.sendReqBtn.disabled = false;
     Main.sendReqBtn.textContent = "Send";
   }
