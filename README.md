@@ -8,6 +8,7 @@ A web client for sending HTTP requests directly from your browser.
 <ul>
   <li>All major functionalities from sending different requests with different types to recieving the results nicely formatted.</li>
   <li>Providing a helpful stats and messages about the request nicely displayed on a popup.</li>
+  <li>This version comes with helpful request fail messages and enhanced error handling solutions.</li>
 </ul>
 
 ## Tasks
