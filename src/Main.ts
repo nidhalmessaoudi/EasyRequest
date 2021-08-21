@@ -25,7 +25,6 @@ export default class Main {
   private static reqOptionsBar: HTMLDivElement;
   private static sendReqBtn: HTMLButtonElement;
   private static resultsEditor: JSONEditor;
-  private static author: HTMLAnchorElement;
   private static switchTheme: HTMLSpanElement;
   private static themeIcon: HTMLElement;
   private static timeoutMsg = "The server takes too long to respond!";
@@ -65,8 +64,6 @@ export default class Main {
       Main.switchTheme.insertAdjacentHTML("afterbegin", layout.darkIconLayout);
       document.body.classList.remove("dark-theme");
       document.body.classList.add("light-theme");
-      Main.author?.classList.remove("dark-theme");
-      Main.author?.classList.add("light-theme");
       Main.reqEndpoint?.classList.remove("form-control__dark-theme");
       Main.reqType?.classList.remove("type-selection__dark-theme");
       const editorDarkStyle = document.getElementById("editor-dark");
@@ -77,8 +74,6 @@ export default class Main {
       Main.switchTheme.insertAdjacentHTML("afterbegin", layout.lightIconLayout);
       document.body.classList.remove("light-theme");
       document.body.classList.add("dark-theme");
-      Main.author?.classList.remove("light-theme");
-      Main.author?.classList.add("dark-theme");
       Main.reqType?.classList.add("type-selection__dark-theme");
       Main.reqEndpoint?.classList.add("form-control__dark-theme");
       Main.render("beforebegin", layout.editorDarkStyle);
@@ -99,7 +94,6 @@ export default class Main {
     Main.reqOptionsBar = document.getElementById(
       "options-bar"
     ) as HTMLDivElement;
-    Main.author = document.getElementById("author") as HTMLAnchorElement;
     Main.switchTheme = document.getElementById(
       "theme-switch"
     ) as HTMLSpanElement;
@@ -126,6 +120,18 @@ export default class Main {
       if (!validUrl.isWebUri(reqUrl)) {
         Popup.main(false, undefined, "Unvalid request url!");
         return;
+      }
+
+      if (!validUrl.isHttpsUri(reqUrl)) {
+        throw new ReqError(
+          `Unsecure request url! Use
+           <a 
+            href="https://developer.mozilla.org/en-US/docs/Glossary/https"
+            target="_blank"
+           >
+            https
+           </a> instead.`
+        );
       }
 
       Main.sendReqBtn.textContent = "Sending";

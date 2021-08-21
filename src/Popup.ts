@@ -53,7 +53,7 @@ export default class Popup {
   private static renderError(error: string) {
     const popupError = document.createElement("p");
     popupError.classList.add("popup-error");
-    popupError.textContent = error;
+    popupError.insertAdjacentHTML("afterbegin", error);
     Popup.body.appendChild(popupError);
   }
 

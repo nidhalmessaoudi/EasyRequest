@@ -33,14 +33,9 @@ div.dark-theme {
   color: var(--dark-text-color);
 }
 
-a:link.light-theme,
-a:visited.light-theme {
-  color: var(--light-text-color);
-}
-
-a:link.dark-theme,
-a:visited.dark-theme {
-  color: var(--dark-text-color);
+a:link,
+a:visited {
+  color: inherit;
 }
 
 code {
@@ -249,6 +244,7 @@ code {
 
 .popup-icon {
   font-size: 1.2rem;
+  cursor: pointer;
 }
 
 .popup-body {
