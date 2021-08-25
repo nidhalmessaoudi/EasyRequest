@@ -79,6 +79,10 @@ code {
   border: 1px solid var(--secondary-dark-bg-color);
 }
 
+.btn {
+  text-transform: uppercase;
+}
+
 .type-selection {
   width: 6rem;
   border: 1px solid #ced4da;
@@ -212,13 +216,13 @@ code {
 
 .popup {
   position: fixed;
-  top: 2rem;
-  left: 3rem;
+  top: 4%;
+  left: 3%;
   width: 20rem;
   height: 6.5rem;
   z-index: 899;
   background-color: inherit;
-  overflow-y: auto;
+  overflow: hidden;
   border-radius: 4px;
   padding: 1rem;
   animation: popupAppear 500ms;
@@ -256,12 +260,6 @@ code {
   margin: 0 5px;
 }
 
-@media (max-width: 992px) {
-  .popup {
-    display: none;
-  }
-}
-
 @keyframes popupAppear {
   0% {
     transform: translateX(-300px);
@@ -279,4 +277,19 @@ code {
   100% {
     transform: translateX(-500px);
   }
+}
+
+.new-tab__container {
+  position: fixed;
+  bottom: 4%;
+  right: 3.25%;
+  z-index: 499;
+}
+
+.bi-plus {
+  font-size: 2rem;
+}
+
+.mdc-fab {
+  background-color: var(--main-color) !important;
 }

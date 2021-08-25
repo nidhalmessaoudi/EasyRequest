@@ -4,6 +4,7 @@ import validUrl from "valid-url";
 import "./styles.css";
 import "jsoneditor/dist/jsoneditor.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import "@material/fab/dist/mdc.fab.min.css";
 
 import layout from "./layout";
 
@@ -16,6 +17,7 @@ import ReqError from "./ReqError";
 export default class Main {
   public static CONFIG = {
     root: document.getElementById("root")! as HTMLDivElement,
+    client: "https://easyrequest.netlify.app",
   };
   public static reqEndpoint: HTMLInputElement;
   public static headers: { [headerName: string]: string };
@@ -27,62 +29,15 @@ export default class Main {
   private static resultsEditor: JSONEditor;
   private static switchTheme: HTMLSpanElement;
   private static themeIcon: HTMLElement;
+  private static newTabBtn: HTMLButtonElement;
   private static timeoutMsg = "The server takes too long to respond!";
 
   public static main() {
     window.addEventListener("load", Main.loadHandler);
-    ReqHeaders.onChange();
-  }
-
-  public static render(
-    position: InsertPosition,
-    layout: string,
-    parentEl?: HTMLElement
-  ) {
-    if (!parentEl) {
-      Main.CONFIG.root.insertAdjacentHTML(position, layout);
-      return;
-    }
-    parentEl.insertAdjacentHTML(position, layout);
-  }
-
-  private static adjustTheme(edit: boolean) {
-    let theme = localStorage.getItem("theme");
-    if (edit) {
-      theme === "light"
-        ? localStorage.setItem("theme", "dark")
-        : localStorage.setItem("theme", "light");
-      theme = localStorage.getItem("theme");
-    }
-    if (!theme) {
-      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      theme = isDark ? "dark" : "light";
-      localStorage.setItem("theme", theme);
-    }
-    if (Main.themeIcon) Main.switchTheme.removeChild(Main.themeIcon);
-    if (theme === "light") {
-      Main.switchTheme.insertAdjacentHTML("afterbegin", layout.darkIconLayout);
-      document.body.classList.remove("dark-theme");
-      document.body.classList.add("light-theme");
-      Main.reqEndpoint?.classList.remove("form-control__dark-theme");
-      Main.reqType?.classList.remove("type-selection__dark-theme");
-      const editorDarkStyle = document.getElementById("editor-dark");
-      if (editorDarkStyle) {
-        document.body.removeChild(editorDarkStyle);
-      }
-    } else {
-      Main.switchTheme.insertAdjacentHTML("afterbegin", layout.lightIconLayout);
-      document.body.classList.remove("light-theme");
-      document.body.classList.add("dark-theme");
-      Main.reqType?.classList.add("type-selection__dark-theme");
-      Main.reqEndpoint?.classList.add("form-control__dark-theme");
-      Main.render("beforebegin", layout.editorDarkStyle);
-    }
-    Main.themeIcon = document.getElementById("bi-theme") as HTMLElement;
-    Popup.adjustTheme();
   }
 
   private static loadHandler() {
+    ReqHeaders.onChange();
     Main.render("afterbegin", layout.initialLayout);
     Main.render("beforeend", layout.footerLayout);
     Main.reqForm = document.getElementById("req-form")! as HTMLFormElement;
@@ -102,11 +57,13 @@ export default class Main {
     Main.resultsEditor = new JSONEditor(resultContainer, {
       mode: "code",
     });
+    Main.newTabBtn = document.getElementById("new-tab") as HTMLButtonElement;
     Main.resultsEditor.set({ Notice: "Results will appear here!" });
     Main.switchTheme.addEventListener("click", () => Main.adjustTheme(true));
     Main.reqForm.addEventListener("submit", Main.submitHandler);
     window.addEventListener("storage", () => Main.adjustTheme(false));
     Main.reqOptionsBar.addEventListener("click", Main.optionsClickHandler);
+    Main.newTabBtn.addEventListener("click", Main.newTabHandler);
   }
 
   private static async submitHandler(e: Event) {
@@ -139,7 +96,7 @@ export default class Main {
       Main.resultsEditor.set({ Notice: "Loading data..." });
 
       const reqTimer = Main.makeTimer(5);
-
+      console.log(Main.body);
       const req = fetch(reqUrl, {
         method: Main.reqType.value,
         headers: Main.headers,
@@ -190,6 +147,54 @@ export default class Main {
       }
       Main.styleInfail(err.noDefault ? false : true);
     }
+  }
+
+  public static render(
+    position: InsertPosition,
+    layout: string,
+    parentEl?: HTMLElement
+  ) {
+    if (!parentEl) {
+      Main.CONFIG.root.insertAdjacentHTML(position, layout);
+      return;
+    }
+    parentEl.insertAdjacentHTML(position, layout);
+  }
+
+  private static adjustTheme(edit: boolean) {
+    let theme = localStorage.getItem("theme");
+    if (edit) {
+      theme === "light"
+        ? localStorage.setItem("theme", "dark")
+        : localStorage.setItem("theme", "light");
+      theme = localStorage.getItem("theme");
+    }
+    if (!theme) {
+      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      theme = isDark ? "dark" : "light";
+      localStorage.setItem("theme", theme);
+    }
+    if (Main.themeIcon) Main.switchTheme.removeChild(Main.themeIcon);
+    if (theme === "light") {
+      Main.switchTheme.insertAdjacentHTML("afterbegin", layout.darkIconLayout);
+      document.body.classList.remove("dark-theme");
+      document.body.classList.add("light-theme");
+      Main.reqEndpoint?.classList.remove("form-control__dark-theme");
+      Main.reqType?.classList.remove("type-selection__dark-theme");
+      const editorDarkStyle = document.getElementById("editor-dark");
+      if (editorDarkStyle) {
+        document.body.removeChild(editorDarkStyle);
+      }
+    } else {
+      Main.switchTheme.insertAdjacentHTML("afterbegin", layout.lightIconLayout);
+      document.body.classList.remove("light-theme");
+      document.body.classList.add("dark-theme");
+      Main.reqType?.classList.add("type-selection__dark-theme");
+      Main.reqEndpoint?.classList.add("form-control__dark-theme");
+      Main.render("beforebegin", layout.editorDarkStyle);
+    }
+    Main.themeIcon = document.getElementById("bi-theme") as HTMLElement;
+    Popup.adjustTheme();
   }
 
   private static getReqInfo(
@@ -250,5 +255,9 @@ export default class Main {
     }
     Main.sendReqBtn.disabled = false;
     Main.sendReqBtn.textContent = "Send";
+  }
+
+  private static newTabHandler() {
+    open(Main.CONFIG.client, "_blank");
   }
 }

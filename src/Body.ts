@@ -104,27 +104,60 @@ export default class Body extends Modal {
   private static saveBodyHandler() {
     switch (Body.activeEditor) {
       case "json":
+        const jsonBody = Body.getJSON(Body.jsonEditor);
+        if (!jsonBody.parsed) {
+          Body.saveBodyBtn.textContent = "Failed";
+          Body.saveBodyBtn.classList.remove("btn-primary");
+          Body.saveBodyBtn.classList.add("btn-outline-danger");
+          Body.saveBodyBtn.disabled = true;
+          reset(1.5, true);
+          return;
+        }
+        if (Object.keys(jsonBody.data).length === 0) return;
         Body.editorContent.type = "json";
-        Body.editorContent.value = Body.jsonEditor.get();
+        Body.editorContent.value = jsonBody.data;
         ReqHeaders.addHeader("Content-Type", "application/json");
         break;
       case "other":
         Body.editorContent.type = "other";
+        if (Body.theOtherEditor.value.trim() === "") return;
         Body.editorContent.value = Body.theOtherEditor.value;
         break;
     }
     Main.body = Body.editorContent.value!;
     Body.saveBodyBtn.textContent = "Saved";
     Body.saveBodyBtn.disabled = true;
-    setTimeout(() => {
-      Body.saveBodyBtn.textContent = "Save";
-      Body.saveBodyBtn.disabled = false;
-    }, 1000);
+    reset(1);
+    function reset(after: number, afterFail = false) {
+      setTimeout(() => {
+        if (afterFail) {
+          Body.saveBodyBtn.classList.remove("btn-outline-danger");
+          Body.saveBodyBtn.classList.add("btn-primary");
+        }
+        Body.saveBodyBtn.textContent = "Save";
+        Body.saveBodyBtn.disabled = false;
+      }, after * 1000);
+    }
   }
 
   private static toggleActiveType() {
     document
       .querySelectorAll(".body-type")
       .forEach((el) => el.classList.toggle("body-type__active"));
+  }
+
+  private static getJSON(editor: JSONEditor) {
+    try {
+      const json = editor.get();
+      return {
+        parsed: true,
+        data: json,
+      };
+    } catch {
+      return {
+        parsed: false,
+        data: null,
+      };
+    }
   }
 }

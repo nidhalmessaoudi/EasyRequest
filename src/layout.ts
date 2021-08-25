@@ -31,6 +31,7 @@ export default {
                 type="submit"
                 id="send-req"
                 class="btn btn-primary"
+                title="Send Request"
             >
                 Send
             </button>
@@ -38,11 +39,16 @@ export default {
         </form>
     </div>
     <div id="options-bar" class="req-options-bar">
-        <span class="req-option" data-name="params">Params</span>
-        <span class="req-option" data-name="headers">Headers</span>
-        <span class="req-option" data-name="body">Body</span>
+        <span class="req-option" title="Query Params" data-name="params">Params</span>
+        <span class="req-option" title="Headers" data-name="headers">Headers</span>
+        <span class="req-option" title="Body" data-name="body">Body</span>
     </div>
     <div class="result-container" id="json-results"></div>
+    </div>
+    <div class="new-tab__container" title="New Tab">
+      <button id="new-tab" class="mdc-fab" aria-label="New Tab">
+        <i class="bi bi-plus"></i>
+      </button>
     </div>
   `,
 
@@ -295,6 +301,11 @@ export default {
   `,
 
   popupSuccessLayout: `
+    <style>
+      .popup {
+        border-top: 3px solid #66de93;
+      }
+    </style>
     <div class="popup-status popup-status__success">
       <span>Success</span>
       <i id="popup-close" class="bi bi-check-circle-fill popup-icon"></i>
@@ -303,6 +314,11 @@ export default {
   `,
 
   popupFailLayout: `
+    <style>
+      .popup {
+        border-top: 3px solid #d83a56;
+      }
+    </style>
     <div class="popup-status popup-status__fail">
       <span>Fail</span>
       <i id="popup-close" class="bi bi-x-circle-fill popup-icon"></i>

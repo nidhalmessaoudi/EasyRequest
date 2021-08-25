@@ -8,7 +8,7 @@ export default class ReqHeaders extends Modal {
   private static formsParent: HTMLDivElement;
   private static newHeaderBtn: HTMLButtonElement;
   public static headers = [
-    ["User-Agent", "EasyRequest-Runtime/0.1.6-beta"],
+    ["User-Agent", "EasyRequest-Runtime/0.1.7-beta"],
     ["Accept", "*/*"],
   ];
 
