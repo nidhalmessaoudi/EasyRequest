@@ -1,59 +1,70 @@
-import layout from "./layout";
-import Main from "./Main";
+import { boundMethod } from "autobind-decorator";
+
+import CONFIG from "../utils/CONFIG";
+import Main from "../Client/Main";
+import render from "../Helpers/render";
+import layout from "../layouts/layout";
 import Modal from "./Modal";
 
 export default class ReqHeaders extends Modal {
-  private static title = "Headers";
-  private static headersContainer: HTMLDivElement;
-  private static formsParent: HTMLDivElement;
-  private static newHeaderBtn: HTMLButtonElement;
-  public static headers = [
-    ["User-Agent", "EasyRequest-Runtime/0.1.7-beta"],
-    ["Accept", "*/*"],
-  ];
+  public static self: ReqHeaders;
+  public headers = Object.entries(CONFIG.headers);
+  private title = "Headers";
+  private controller: Main;
+  private headersContainer!: HTMLDivElement;
+  private formsParent!: HTMLDivElement;
+  private newHeaderBtn!: HTMLButtonElement;
 
-  public static override main() {
-    super.main();
-    Main.render("beforeend", layout.headersLayout, Modal.modal);
-    ReqHeaders.modalTitle.textContent = ReqHeaders.title;
-    ReqHeaders.headersContainer = document.getElementById(
+  private constructor(controller: Main) {
+    super();
+    this.controller = controller;
+  }
+
+  public static main(controller: Main) {
+    if (!this.self) {
+      this.self = new ReqHeaders(controller);
+    }
+    this.self.init();
+    return this.self;
+  }
+
+  private init() {
+    this.main();
+    render("beforeend", layout.headersLayout, this.modal!);
+    this.modalTitle.textContent = this.title;
+    this.headersContainer = document.getElementById(
       "options-req"
     ) as HTMLDivElement;
-    ReqHeaders.formsParent = document.getElementById(
+    this.formsParent = document.getElementById(
       "header-forms"
     ) as HTMLDivElement;
-    ReqHeaders.newHeaderBtn = document.getElementById(
+    this.newHeaderBtn = document.getElementById(
       "header-form__new"
     ) as HTMLButtonElement;
 
-    ReqHeaders.renderHeaders();
-    ReqHeaders.renderEmptyHeader();
+    this.renderHeaders();
+    this.renderEmptyHeader();
 
-    ReqHeaders.headersContainer.addEventListener(
-      "submit",
-      ReqHeaders.submitHandler
-    );
-    ReqHeaders.headersContainer.addEventListener(
-      "click",
-      ReqHeaders.clickHandler
-    );
+    this.headersContainer.addEventListener("submit", this.submitHandler);
+    this.headersContainer.addEventListener("click", this.clickHandler);
   }
 
-  private static clickHandler(e: Event) {
+  @boundMethod
+  private clickHandler(e: Event) {
     const clickedEl = e.target as HTMLElement;
     if (clickedEl.id === "header-form__new") {
-      ReqHeaders.newHeaderHandler();
+      this.newHeaderHandler();
       return;
     }
     if (clickedEl.classList.contains("header-remove")) {
-      ReqHeaders.removeHeaderHandler(clickedEl);
+      this.removeHeaderHandler(clickedEl);
     }
   }
 
-  private static renderHeaders() {
-    ReqHeaders.headers.forEach((header, i) => {
+  private renderHeaders() {
+    this.headers.forEach((header, i) => {
       const [key, value] = header;
-      Main.render("beforeend", layout.headerFormLayout, ReqHeaders.formsParent);
+      render("beforeend", layout.headerFormLayout, this.formsParent);
       const renderedForms = document.getElementsByClassName("add-header");
       const currentForm = renderedForms[renderedForms.length - 1];
       const keyInput = currentForm.querySelector(
@@ -82,11 +93,12 @@ export default class ReqHeaders extends Modal {
     });
   }
 
-  private static renderEmptyHeader() {
-    Main.render("beforeend", layout.headerFormLayout, ReqHeaders.formsParent);
+  private renderEmptyHeader() {
+    render("beforeend", layout.headerFormLayout, this.formsParent);
   }
 
-  private static submitHandler(e: Event) {
+  @boundMethod
+  private submitHandler(e: Event) {
     const submittedForm = e.target as HTMLFormElement;
     if (!submittedForm.classList.contains("add-header")) return;
     e.preventDefault();
@@ -106,17 +118,15 @@ export default class ReqHeaders extends Modal {
     const headerValue = headerValueEl.value.trim();
     if (!headerKey || !headerValue) return;
     if (
-      ReqHeaders.headers.some(
-        (el) => el[0] === headerKey && el[1] === headerValue
-      )
+      this.headers.some((el) => el[0] === headerKey && el[1] === headerValue)
     ) {
       return;
     }
-    const headerExist = ReqHeaders.headers.find((el) => el[0] === headerKey);
+    const headerExist = this.headers.find((el) => el[0] === headerKey);
     if (headerExist) {
       if (submitBtn.textContent?.trim() === "Add") {
         submitBtn.disabled = true;
-        Main.render("beforeend", layout.formErrorLayout, submittedForm);
+        render("beforeend", layout.formErrorLayout, submittedForm);
         const headerErrorEl = submittedForm.querySelector(
           ".option-error"
         )! as HTMLDivElement;
@@ -130,20 +140,19 @@ export default class ReqHeaders extends Modal {
         }, 2000);
         return;
       }
-      ReqHeaders.editHeader(headerExist, headerValue);
+      this.editHeader(headerExist, headerValue);
       return;
     }
-    ReqHeaders.headers.push([headerKey, headerValue]);
+    this.headers.push([headerKey, headerValue]);
     submitBtn.blur();
     submitBtn.textContent = "Edit";
     removeBtnContainer.style.display = "inline-block";
     headerKeyEl.readOnly = true;
-    ReqHeaders.onChange();
+    this.onChange();
   }
 
-  private static newHeaderHandler() {
-    const renderedForms =
-      ReqHeaders.formsParent.querySelectorAll(".add-header");
+  private newHeaderHandler() {
+    const renderedForms = this.formsParent.querySelectorAll(".add-header");
     if (renderedForms.length) {
       const lastRenderedForm = renderedForms[renderedForms.length - 1];
       const formInputs: HTMLInputElement[] = [];
@@ -166,11 +175,11 @@ export default class ReqHeaders extends Modal {
       }
       if (found) return;
     }
-    ReqHeaders.renderEmptyHeader();
-    ReqHeaders.newHeaderBtn.blur();
+    this.renderEmptyHeader();
+    this.newHeaderBtn.blur();
   }
 
-  private static removeHeaderHandler(target: HTMLElement) {
+  private removeHeaderHandler(target: HTMLElement) {
     const currentForm = target.parentElement?.parentElement! as HTMLFormElement;
     const headerKeyEl = currentForm.querySelector(
       "input[name='header-key']"
@@ -181,28 +190,27 @@ export default class ReqHeaders extends Modal {
     const headerKey = headerKeyEl.value;
     const headerValue = headerValueEl.value;
 
-    ReqHeaders.headers = ReqHeaders.headers.filter((header) => {
+    this.headers = this.headers.filter((header) => {
       return header[0] !== headerKey && header[1] !== headerValue;
     });
 
-    ReqHeaders.formsParent.removeChild(currentForm);
-    ReqHeaders.onChange();
+    this.formsParent.removeChild(currentForm);
+    this.onChange();
   }
 
-  private static editHeader(oldHeaderObj: string[], newHeaderValue: string) {
-    ReqHeaders.headers[ReqHeaders.headers.indexOf(oldHeaderObj)][1] =
-      newHeaderValue;
-    ReqHeaders.onChange();
+  private editHeader(oldHeaderObj: [string, string], newHeaderValue: string) {
+    this.headers[this.headers.indexOf(oldHeaderObj)][1] = newHeaderValue;
+    this.onChange();
   }
 
-  public static addHeader(headerName: string, headerValue: string) {
-    ReqHeaders.headers.push([headerName, headerValue]);
+  public addHeader(headerName: string, headerValue: string) {
+    this.headers.push([headerName, headerValue]);
   }
 
-  public static onChange() {
-    Main.headers = {};
-    ReqHeaders.headers.forEach((header) => {
-      Main.headers[header[0]] = header[1];
+  public onChange() {
+    this.controller.headers = {};
+    this.headers.forEach((header) => {
+      Main.self.headers[header[0]] = header[1];
     });
   }
 }

@@ -1,5 +1,8 @@
-import layout from "./layout";
-import Main from "./Main";
+import { boundMethod } from "autobind-decorator";
+
+import DOM from "../Client/DOM";
+import render from "../Helpers/render";
+import layout from "../layouts/layout";
 import Modal from "./Modal";
 
 interface queryParam {
@@ -8,65 +11,73 @@ interface queryParam {
 }
 
 export default class QueryParams extends Modal {
-  private static title = "Query Params";
-  private static queryParams: queryParam[] = [];
-  private static queryParamsContainer: HTMLDivElement;
-  private static formsParent: HTMLDivElement;
-  private static newParamBtn: HTMLButtonElement;
+  public static self: QueryParams;
+  private title = "Query Params";
+  private dom: DOM;
+  private queryParams: queryParam[] = [];
+  private queryParamsContainer!: HTMLDivElement;
+  private formsParent!: HTMLDivElement;
+  private newParamBtn!: HTMLButtonElement;
 
-  public static override main() {
-    super.main();
-    QueryParams.modalTitle.textContent = QueryParams.title;
-    Main.render("beforeend", layout.paramsLayout, QueryParams.modal);
-    QueryParams.queryParamsContainer = document.getElementById(
+  private constructor(dom: DOM) {
+    super();
+    this.dom = dom;
+  }
+
+  public static main(dom: DOM) {
+    if (!this.self) {
+      this.self = new QueryParams(dom);
+    }
+    this.self.init();
+    return this.self;
+  }
+
+  private init() {
+    this.main();
+    this.modalTitle.textContent = this.title;
+    render("beforeend", layout.paramsLayout, this.modal!);
+    this.queryParamsContainer = document.getElementById(
       "options-req"
     ) as HTMLDivElement;
-    QueryParams.formsParent = document.getElementById(
-      "param-forms"
-    ) as HTMLDivElement;
-    QueryParams.newParamBtn = document.getElementById(
+    this.formsParent = document.getElementById("param-forms") as HTMLDivElement;
+    this.newParamBtn = document.getElementById(
       "param-form__new"
     )! as HTMLButtonElement;
 
-    QueryParams.renderParams();
-    QueryParams.renderEmptyParam();
+    this.renderParams();
+    this.renderEmptyParam();
 
-    QueryParams.queryParamsContainer.addEventListener(
-      "submit",
-      QueryParams.submitHandler
-    );
-    QueryParams.queryParamsContainer.addEventListener(
-      "click",
-      QueryParams.clickHandler
-    );
+    this.queryParamsContainer.addEventListener("submit", this.submitHandler);
+    this.queryParamsContainer.addEventListener("click", this.clickHandler);
   }
 
-  private static clickHandler(e: Event) {
+  @boundMethod
+  private clickHandler(e: Event) {
     const clickedEl = e.target as HTMLElement;
     if (clickedEl.id === "param-form__new") {
-      QueryParams.newParamHandler();
+      this.newParamHandler();
       return;
     }
     if (clickedEl.classList.contains("param-remove")) {
-      QueryParams.removeParamHandler(clickedEl);
+      this.removeParamHandler(clickedEl);
     }
   }
 
-  private static pushFoundParams() {
-    QueryParams.queryParams = [];
-    const reqUrlArr = Main.reqEndpoint.value.split("?");
+  private pushFoundParams() {
+    this.queryParams = [];
+    const reqUrlArr = this.dom.reqEndpoint.value.split("?");
     if (reqUrlArr.length < 2) return;
     reqUrlArr[1].split("&").forEach((param) => {
       const [key, value] = param.split("=");
-      QueryParams.queryParams.push({ key, value });
+      this.queryParams.push({ key, value });
     });
   }
 
-  private static renderParams() {
-    QueryParams.pushFoundParams();
-    QueryParams.queryParams.forEach((param) => {
+  private renderParams() {
+    this.pushFoundParams();
+    this.queryParams.forEach((param) => {
       const { key, value } = param;
-      Main.render("beforeend", layout.paramFormLayout, QueryParams.formsParent);
+      render("beforeend", layout.paramFormLayout, this.formsParent);
       const renderedForms = document.getElementsByClassName("add-param");
       const currentForm = renderedForms[renderedForms.length - 1];
       const keyInput = currentForm.querySelector(
@@ -89,11 +100,12 @@ export default class QueryParams extends Modal {
     });
   }
 
-  private static renderEmptyParam() {
-    Main.render("beforeend", layout.paramFormLayout, QueryParams.formsParent);
+  private renderEmptyParam() {
+    render("beforeend", layout.paramFormLayout, this.formsParent);
   }
 
-  private static submitHandler(e: Event) {
+  @boundMethod
+  private submitHandler(e: Event) {
     const submittedForm = e.target as HTMLFormElement;
     if (!submittedForm.classList.contains("add-param")) return;
     e.preventDefault();
@@ -113,19 +125,17 @@ export default class QueryParams extends Modal {
     const paramValue = paramValueEl.value.trim();
     if (!paramKey || !paramValue) return;
     if (
-      QueryParams.queryParams.some(
+      this.queryParams.some(
         (el) => el.key === paramKey && el.value === paramValue
       )
     ) {
       return;
     }
-    const paramExist = QueryParams.queryParams.find(
-      (el) => el.key === paramKey
-    );
+    const paramExist = this.queryParams.find((el) => el.key === paramKey);
     if (paramExist) {
       if (submitBtn.textContent?.trim() === "Add") {
         submitBtn.disabled = true;
-        Main.render("beforeend", layout.formErrorLayout, submittedForm);
+        render("beforeend", layout.formErrorLayout, submittedForm);
         const paramErrorEl = submittedForm.querySelector(
           ".option-error"
         )! as HTMLDivElement;
@@ -139,20 +149,19 @@ export default class QueryParams extends Modal {
         }, 2000);
         return;
       }
-      QueryParams.editParam(paramExist, paramValue);
+      this.editParam(paramExist, paramValue);
       return;
     }
-    QueryParams.queryParams.push({ key: paramKey, value: paramValue });
+    this.queryParams.push({ key: paramKey, value: paramValue });
     submitBtn.blur();
     submitBtn.textContent = "Edit";
     removeBtnContainer.style.display = "inline-block";
     paramKeyEl.readOnly = true;
-    QueryParams.onChange();
+    this.onChange();
   }
 
-  private static newParamHandler() {
-    const renderedForms =
-      QueryParams.formsParent.querySelectorAll(".add-param");
+  private newParamHandler() {
+    const renderedForms = this.formsParent.querySelectorAll(".add-param");
     if (renderedForms.length) {
       const lastRenderedForm = renderedForms[renderedForms.length - 1];
       const formInputs: HTMLInputElement[] = [];
@@ -175,11 +184,11 @@ export default class QueryParams extends Modal {
       }
       if (found) return;
     }
-    QueryParams.renderEmptyParam();
-    QueryParams.newParamBtn.blur();
+    this.renderEmptyParam();
+    this.newParamBtn.blur();
   }
 
-  private static removeParamHandler(target: HTMLElement) {
+  private removeParamHandler(target: HTMLElement) {
     const currentForm = target.parentElement?.parentElement! as HTMLFormElement;
     const paramKeyEl = currentForm.querySelector(
       "input[name='param-key']"
@@ -190,30 +199,27 @@ export default class QueryParams extends Modal {
     const paramKey = paramKeyEl.value;
     const paramValue = paramValueEl.value;
 
-    QueryParams.queryParams = QueryParams.queryParams.filter((param) => {
+    this.queryParams = this.queryParams.filter((param) => {
       return param.key !== paramKey && param.value !== paramValue;
     });
 
-    QueryParams.formsParent.removeChild(currentForm);
-    QueryParams.onChange();
+    this.formsParent.removeChild(currentForm);
+    this.onChange();
   }
 
-  private static editParam(oldParamObj: queryParam, newParamValue: string) {
-    QueryParams.queryParams[
-      QueryParams.queryParams.indexOf(oldParamObj)
-    ].value = newParamValue;
-    QueryParams.onChange();
+  private editParam(oldParamObj: queryParam, newParamValue: string) {
+    this.queryParams[this.queryParams.indexOf(oldParamObj)].value =
+      newParamValue;
+    this.onChange();
   }
 
-  private static onChange() {
-    const reqArr = Main.reqEndpoint.value.split("?");
-    Main.reqEndpoint.value = reqArr[0];
-    if (!QueryParams.queryParams.length) return;
+  private onChange() {
+    const reqArr = this.dom.reqEndpoint.value.split("?");
+    this.dom.reqEndpoint.value = reqArr[0];
+    if (!this.queryParams.length) return;
     const queryString =
       "?" +
-      QueryParams.queryParams
-        .map((param) => `${param.key}=${param.value}`)
-        .join("&");
-    Main.reqEndpoint.value += queryString;
+      this.queryParams.map((param) => `${param.key}=${param.value}`).join("&");
+    this.dom.reqEndpoint.value += queryString;
   }
 }

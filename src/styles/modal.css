@@ -1,0 +1,90 @@
+#overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 999;
+}
+
+.modal-main {
+  width: 75%;
+  height: 75%;
+  text-align: left;
+  padding: 2rem;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1060;
+  border-radius: 0.4rem;
+  overflow-y: auto;
+}
+
+.modal-top {
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal-brand {
+  margin-bottom: 1.5rem;
+}
+
+.close-icon {
+  font-size: 1.7rem;
+  user-select: none;
+  cursor: pointer;
+}
+
+.new-btn__container {
+  margin: 1rem 0;
+}
+
+.add {
+  margin-bottom: 1rem;
+}
+
+.remove-btn {
+  display: none;
+}
+
+.proceed-container {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.req-body__action {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.body-types {
+  user-select: none;
+}
+
+.body-type {
+  opacity: 0.6;
+  margin: 0 0.5rem;
+  cursor: pointer;
+}
+
+.body-type__active {
+  opacity: 1;
+  border-bottom: 2px solid var(--main-color);
+}
+
+.editor {
+  height: 250px;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.req-body__editor {
+  width: 100%;
+  font-family: "dejavu sans mono", "droid sans mono", consolas, monaco,
+    "lucida console", "courier new", courier, monospace, sans-serif;
+  font-size: 0.9rem;
+}

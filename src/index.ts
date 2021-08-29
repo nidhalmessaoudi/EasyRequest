@@ -1,3 +1,3 @@
-import Main from "./Main";
+import Main from "./Client/Main";
 
 Main.main();
