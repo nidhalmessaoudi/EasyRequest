@@ -57,8 +57,8 @@ export default class AJAX {
     if (!resOrTimer.ok) {
       throw new ReqError(
         "The server returns a no OK status!",
-        res,
         reqInfo,
+        res,
         true
       );
     }

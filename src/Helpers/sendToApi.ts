@@ -26,9 +26,12 @@ export default async function sendToApi(
 
     const reqOptions: ReqOptions = {
       method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     };
-
+    console.log(body);
+    console.log(reqOptions);
+    console.log(JSON.stringify(body));
     const request = AJAX.main(new URL(`${CONFIG.api}/requests`), reqOptions);
     await request.asyncRequest();
   } catch (err) {
