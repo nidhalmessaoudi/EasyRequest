@@ -16,8 +16,8 @@ export default async function sendToApi(
 
     if (reqInfo) {
       body.statusCode = reqInfo.Status;
-      body.requestTime = reqInfo.Time;
-      body.requestSize = reqInfo.Size;
+      body.responseTime = reqInfo.Time;
+      body.responseSize = reqInfo.Size;
     }
 
     if (message) {
@@ -29,9 +29,7 @@ export default async function sendToApi(
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     };
-    console.log(body);
-    console.log(reqOptions);
-    console.log(JSON.stringify(body));
+
     const request = AJAX.main(new URL(`${CONFIG.api}/requests`), reqOptions);
     await request.asyncRequest();
   } catch (err) {
