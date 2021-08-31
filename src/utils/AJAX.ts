@@ -4,13 +4,13 @@ import ReqOptions from "../Interfaces/ReqOptions";
 import ReqError from "./ReqError";
 
 export default class AJAX {
-  private static self: AJAX;
+  public static self: AJAX;
   private url!: string;
   private options?: ReqOptions;
 
   private constructor() {}
 
-  public static main(url: URL, options?: ReqOptions) {
+  public static main(url: string, options?: ReqOptions) {
     if (!this.self) {
       AJAX.self = new AJAX();
     }
@@ -18,12 +18,10 @@ export default class AJAX {
     return AJAX.self;
   }
 
-  private init(url: URL, options?: ReqOptions) {
-    const urlStr = String(url);
+  private init(url: string, options?: ReqOptions) {
+    this.validateURL(url);
 
-    this.validateURL(urlStr);
-
-    this.url = urlStr;
+    this.url = url;
     this.options = options;
   }
 
@@ -69,23 +67,6 @@ export default class AJAX {
     };
   }
 
-  public specifyError(err: Error) {
-    let msg = err.message;
-    if (err.name === "TypeError") {
-      if (!navigator.onLine) {
-        msg = "Failed to send the request! Probably you lost your connection.";
-      } else {
-        msg = `Request blocked by <a
-         href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS"
-         target="_blank"
-        >
-         CORS
-        </a> policy.`;
-      }
-    }
-    return msg;
-  }
-
   private validateURL(url: string) {
     if (!validUrl.isWebUri(url)) {
       throw new ReqError("Unvalid request url!");
@@ -102,6 +83,28 @@ export default class AJAX {
              </a> instead.`
       );
     }
+  }
+
+  public specifyError(err: ReqError) {
+    let msg = err.message;
+
+    if (err.custom) {
+      return msg;
+    }
+
+    if (err.name === "TypeError") {
+      if (!navigator.onLine) {
+        msg = "Failed to send the request! Probably you lost your connection.";
+      } else {
+        msg = `Request blocked by <a
+         href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS"
+         target="_blank"
+        >
+         CORS
+        </a> policy.`;
+      }
+    }
+    return msg;
   }
 
   private async handleResponse(res: Response, reqTime: number) {

@@ -3,7 +3,7 @@ export default {
   client: "https://easyrequest.netlify.app",
   api: "https://easyrequest.herokuapp.com/api/v1",
   headers: {
-    "User-Agent": "EasyRequest-Runtime/0.1.8-beta",
+    "User-Agent": "EasyRequest-Runtime/0.1.9-beta",
     Accept: "*/*",
   },
 };

@@ -75,7 +75,7 @@ export default class Main {
       const reqUrl = this.dom.reqEndpoint.value;
       const reqMethod = this.dom.reqType.value as Methods;
 
-      this.ajax = AJAX.main(new URL(reqUrl), {
+      this.ajax = AJAX.main(reqUrl, {
         method: reqMethod,
         headers: this.headers,
         body: this.body,
@@ -99,6 +99,7 @@ export default class Main {
 
       await sendToApi(true, info);
     } catch (err) {
+      if (!this.ajax) this.ajax = AJAX.self;
       let msg = this.ajax?.specifyError(err);
       if (err.reqInfo) {
         this.popup = Popup.main(false, err.reqInfo);

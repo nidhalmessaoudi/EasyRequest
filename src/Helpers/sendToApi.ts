@@ -30,7 +30,7 @@ export default async function sendToApi(
       body: JSON.stringify(body),
     };
 
-    const request = AJAX.main(new URL(`${CONFIG.api}/requests`), reqOptions);
+    const request = AJAX.main(`${CONFIG.api}/requests`, reqOptions);
     await request.asyncRequest();
   } catch (err) {
     return;
