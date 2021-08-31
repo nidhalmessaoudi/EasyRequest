@@ -2,13 +2,12 @@
 A web client for sending HTTP requests directly from your browser.
 
 ## Current Version
-<a href="https://easyrequest.netlify.app"><b>v0.1.8 Beta for Web</b></a>
+<a href="https://easyrequest.netlify.app"><b>v0.1.9 Beta for Web</b></a>
 
 ## Version capabilities
 <ul>
-  <li>All major functionalities from sending different requests with different types to recieving the results nicely formatted.</li>
-  <li>Providing a helpful stats and messages about the request nicely displayed on a popup.</li>
-  <li>This version comes with helpful request fail messages and enhanced error handling solutions.</li>
+  <li>Everything you need in order to send and test your http requests!</li>
+  <li>Fixing major bugs over the last beta.</li>
 </ul>
 
 ## Tasks
