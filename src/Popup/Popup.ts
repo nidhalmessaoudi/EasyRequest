@@ -63,7 +63,7 @@ export default class Popup {
       }
       const popupInfo = document.createElement("span");
       popupInfo.classList.add("popup-info");
-      popupInfo.textContent = `${prop}: ${reqInfo[prop]}`;
+      popupInfo.textContent = `${prop}: ${info[prop]}`;
       this.body.appendChild(popupInfo);
     }
   }
