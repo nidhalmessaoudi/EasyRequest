@@ -29,6 +29,7 @@
   "homepage": "https://github.com/nidhalmessaoudi/EasyRequest#readme",
   "devDependencies": {
     "css-loader": "^6.2.0",
+    "html-loader": "^2.1.2",
     "html-webpack-plugin": "^5.3.2",
     "mini-css-extract-plugin": "^2.1.0",
     "ts-loader": "^9.2.3",

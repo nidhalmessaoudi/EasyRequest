@@ -42,6 +42,8 @@ export default class Main {
 
   @boundMethod
   private loadHandler() {
+    CONFIG.root.innerHTML = "";
+
     render("afterbegin", layout.initialLayout);
     render("beforeend", layout.footerLayout);
 

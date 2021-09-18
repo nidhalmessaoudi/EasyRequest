@@ -28,8 +28,16 @@ const webpackConfig = {
         exclude: /node_modules/,
       },
       {
+        test: /\.html$/i,
+        loader: "html-loader",
+      },
+      {
         test: /\.css$/,
         use: [MiniCssExtractPlugin.loader, "css-loader"],
+      },
+      {
+        test: /\.(png|svg|jpg|jpeg)$/i,
+        type: "asset/resource",
       },
     ],
   },

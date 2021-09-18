@@ -34,12 +34,16 @@
 
       gtag("config", "G-CLHKX0NT18");
     </script>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="./assets/EasyRequest_Favicon.png" />
+    <!-- Bootstrap -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
       integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
       crossorigin="anonymous"
     />
+    <!-- Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -48,7 +52,31 @@
     />
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Startup markup (Will be removed when JavaScript loads) -->
+      <style>
+        @media (prefers-color-scheme: dark) {
+          body {
+            background-color: #18191a;
+            color: #eeeeee;
+          }
+        }
+
+        @media (prefers-color-scheme: light) {
+          body {
+            background-color: #eeeeee;
+            color: #000000;
+          }
+        }
+      </style>
+      <div class="startpage-container">
+        <img
+          src="./assets/EasyRequest_Logo.png"
+          class="startpage-image"
+          alt="Easy Request"
+        />
+      </div>
+    </div>
     <noscript
       >You need to enable JavaScript to run Easy Request Client.</noscript
     >
