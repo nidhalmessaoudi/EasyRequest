@@ -44,18 +44,6 @@ code {
   border-radius: 0.2rem;
 }
 
-.startpage-container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.startpage-image {
-  width: 220px;
-  height: 220px;
-}
-
 .main {
   padding: 1% 3%;
 }
