@@ -5,10 +5,13 @@ import Main from "../Client/Main";
 import render from "../Helpers/render";
 import layout from "../layouts/layout";
 import Modal from "./Modal";
+import ERArray from "../utils/ERArray";
 
 export default class ReqHeaders extends Modal {
   public static self: ReqHeaders;
-  public headers = Object.entries(CONFIG.headers);
+  private headers = new ERArray<[string, string]>(
+    ...Object.entries(CONFIG.headers)
+  );
   private title = "Headers";
   private controller: Main;
   private headersContainer!: HTMLDivElement;
@@ -29,6 +32,7 @@ export default class ReqHeaders extends Modal {
   }
 
   private init() {
+    this.headers.delegate = this;
     this.main();
     render("beforeend", layout.headersLayout, this.modal!);
     this.modalTitle.textContent = this.title;
@@ -62,7 +66,7 @@ export default class ReqHeaders extends Modal {
   }
 
   private renderHeaders() {
-    this.headers.forEach((header, i) => {
+    this.headers.data.forEach((header, i) => {
       const [key, value] = header;
       render("beforeend", layout.headerFormLayout, this.formsParent);
       const renderedForms = document.getElementsByClassName("add-header");
@@ -118,11 +122,13 @@ export default class ReqHeaders extends Modal {
     const headerValue = headerValueEl.value.trim();
     if (!headerKey || !headerValue) return;
     if (
-      this.headers.some((el) => el[0] === headerKey && el[1] === headerValue)
+      this.headers.data.some(
+        (el) => el[0] === headerKey && el[1] === headerValue
+      )
     ) {
       return;
     }
-    const headerExist = this.headers.find((el) => el[0] === headerKey);
+    const headerExist = this.headers.data.find((el) => el[0] === headerKey);
     if (headerExist) {
       if (submitBtn.textContent?.trim() === "Add") {
         submitBtn.disabled = true;
@@ -148,7 +154,6 @@ export default class ReqHeaders extends Modal {
     submitBtn.textContent = "Edit";
     removeBtnContainer.style.display = "inline-block";
     headerKeyEl.readOnly = true;
-    this.onChange();
   }
 
   private newHeaderHandler() {
@@ -190,26 +195,26 @@ export default class ReqHeaders extends Modal {
     const headerKey = headerKeyEl.value;
     const headerValue = headerValueEl.value;
 
-    this.headers = this.headers.filter((header) => {
-      return header[0] !== headerKey && header[1] !== headerValue;
-    });
+    this.headers.init(
+      ...this.headers.data.filter((header) => {
+        return header[0] !== headerKey && header[1] !== headerValue;
+      })
+    );
 
     this.formsParent.removeChild(currentForm);
-    this.onChange();
   }
 
   private editHeader(oldHeaderObj: [string, string], newHeaderValue: string) {
-    this.headers[this.headers.indexOf(oldHeaderObj)][1] = newHeaderValue;
-    this.onChange();
+    this.headers.update(oldHeaderObj, [oldHeaderObj[0], newHeaderValue]);
   }
 
   public addHeader(headerName: string, headerValue: string) {
     this.headers.push([headerName, headerValue]);
   }
 
-  public onChange() {
+  public onChange(sender: ERArray<[string, string]>) {
     this.controller.headers = {};
-    this.headers.forEach((header) => {
+    sender.data.forEach((header) => {
       Main.self.headers[header[0]] = header[1];
     });
   }

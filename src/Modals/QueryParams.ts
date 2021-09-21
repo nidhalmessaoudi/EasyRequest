@@ -2,7 +2,9 @@ import { boundMethod } from "autobind-decorator";
 
 import DOM from "../Client/DOM";
 import render from "../Helpers/render";
+import ERArrayDelegate from "../Interfaces/ERArrayDelegate";
 import layout from "../layouts/layout";
+import ERArray from "../utils/ERArray";
 import Modal from "./Modal";
 
 interface queryParam {
@@ -10,11 +12,14 @@ interface queryParam {
   value: string;
 }
 
-export default class QueryParams extends Modal {
+export default class QueryParams
+  extends Modal
+  implements ERArrayDelegate<queryParam>
+{
   public static self: QueryParams;
   private title = "Query Params";
   private dom: DOM;
-  private queryParams: queryParam[] = [];
+  private queryParams = new ERArray<queryParam>();
   private queryParamsContainer!: HTMLDivElement;
   private formsParent!: HTMLDivElement;
   private newParamBtn!: HTMLButtonElement;
@@ -33,6 +38,7 @@ export default class QueryParams extends Modal {
   }
 
   private init() {
+    this.queryParams.delegate = this;
     this.main();
     this.modalTitle.textContent = this.title;
     render("beforeend", layout.paramsLayout, this.modal!);
@@ -64,7 +70,7 @@ export default class QueryParams extends Modal {
   }
 
   private pushFoundParams() {
-    this.queryParams = [];
+    this.queryParams.clear();
     const reqUrlArr = this.dom.reqEndpoint.value.split("?");
     if (reqUrlArr.length < 2) return;
     reqUrlArr[1].split("&").forEach((param) => {
@@ -75,7 +81,7 @@ export default class QueryParams extends Modal {
 
   private renderParams() {
     this.pushFoundParams();
-    this.queryParams.forEach((param) => {
+    this.queryParams.data.forEach((param) => {
       const { key, value } = param;
       render("beforeend", layout.paramFormLayout, this.formsParent);
       const renderedForms = document.getElementsByClassName("add-param");
@@ -125,13 +131,13 @@ export default class QueryParams extends Modal {
     const paramValue = paramValueEl.value.trim();
     if (!paramKey || !paramValue) return;
     if (
-      this.queryParams.some(
+      this.queryParams.data.some(
         (el) => el.key === paramKey && el.value === paramValue
       )
     ) {
       return;
     }
-    const paramExist = this.queryParams.find((el) => el.key === paramKey);
+    const paramExist = this.queryParams.data.find((el) => el.key === paramKey);
     if (paramExist) {
       if (submitBtn.textContent?.trim() === "Add") {
         submitBtn.disabled = true;
@@ -157,7 +163,6 @@ export default class QueryParams extends Modal {
     submitBtn.textContent = "Edit";
     removeBtnContainer.style.display = "inline-block";
     paramKeyEl.readOnly = true;
-    this.onChange();
   }
 
   private newParamHandler() {
@@ -199,27 +204,28 @@ export default class QueryParams extends Modal {
     const paramKey = paramKeyEl.value;
     const paramValue = paramValueEl.value;
 
-    this.queryParams = this.queryParams.filter((param) => {
-      return param.key !== paramKey && param.value !== paramValue;
-    });
+    this.queryParams.init(
+      ...this.queryParams.data.filter((param) => {
+        return param.key !== paramKey && param.value !== paramValue;
+      })
+    );
 
     this.formsParent.removeChild(currentForm);
-    this.onChange();
   }
 
   private editParam(oldParamObj: queryParam, newParamValue: string) {
-    this.queryParams[this.queryParams.indexOf(oldParamObj)].value =
-      newParamValue;
-    this.onChange();
+    this.queryParams.update(oldParamObj, {
+      key: oldParamObj.key,
+      value: newParamValue,
+    });
   }
 
-  private onChange() {
+  onChange(sender: ERArray<queryParam>) {
     const reqArr = this.dom.reqEndpoint.value.split("?");
     this.dom.reqEndpoint.value = reqArr[0];
-    if (!this.queryParams.length) return;
+    if (!sender.data.length) return;
     const queryString =
-      "?" +
-      this.queryParams.map((param) => `${param.key}=${param.value}`).join("&");
+      "?" + sender.data.map((param) => `${param.key}=${param.value}`).join("&");
     this.dom.reqEndpoint.value += queryString;
   }
 }
