@@ -6,12 +6,16 @@ import render from "../Helpers/render";
 import layout from "../layouts/layout";
 import Modal from "./Modal";
 import ERArray from "../utils/ERArray";
+import ERArrayDelegate from "../Interfaces/ERArrayDelegate";
 
-export default class ReqHeaders extends Modal {
+type HeaderArr = [string, string];
+
+export default class ReqHeaders
+  extends Modal
+  implements ERArrayDelegate<HeaderArr>
+{
   public static self: ReqHeaders;
-  private headers = new ERArray<[string, string]>(
-    ...Object.entries(CONFIG.headers)
-  );
+  private headers = new ERArray<HeaderArr>(...Object.entries(CONFIG.headers));
   private title = "Headers";
   private controller: Main;
   private headersContainer!: HTMLDivElement;
@@ -204,7 +208,7 @@ export default class ReqHeaders extends Modal {
     this.formsParent.removeChild(currentForm);
   }
 
-  private editHeader(oldHeaderObj: [string, string], newHeaderValue: string) {
+  private editHeader(oldHeaderObj: HeaderArr, newHeaderValue: string) {
     this.headers.update(oldHeaderObj, [oldHeaderObj[0], newHeaderValue]);
   }
 
@@ -212,7 +216,7 @@ export default class ReqHeaders extends Modal {
     this.headers.push([headerName, headerValue]);
   }
 
-  public onChange(sender: ERArray<[string, string]>) {
+  public onChange(sender: ERArray<HeaderArr>) {
     this.controller.headers = {};
     sender.data.forEach((header) => {
       Main.self.headers[header[0]] = header[1];
