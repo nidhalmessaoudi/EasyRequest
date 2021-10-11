@@ -19,7 +19,6 @@
   transform: translate(-50%, -50%);
   z-index: 1060;
   border-radius: 0.4rem;
-  overflow-y: auto;
 }
 
 .modal-top {
