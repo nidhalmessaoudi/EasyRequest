@@ -96,13 +96,7 @@ export default {
   `,
 
   overlayLayout: `
-    <div id="overlay">
-      <style>
-        body {
-          overflow: hidden;
-        }
-      </style>
-    </div>
+    <div id="overlay"></div>
   `,
 
   paramsLayout: `
