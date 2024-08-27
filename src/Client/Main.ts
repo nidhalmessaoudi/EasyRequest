@@ -74,7 +74,7 @@ export default class Main {
 
       this.popup?.close(true);
 
-      const reqUrl = this.dom.reqEndpoint.value;
+      const reqUrl = this.dom.reqEndpoint.value.replace(/ /g, "");
       const reqMethod = this.dom.reqType.value as Methods;
 
       this.ajax = AJAX.main(reqUrl, {
