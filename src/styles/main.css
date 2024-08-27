@@ -62,6 +62,12 @@ code {
   height: 23rem;
 }
 
+@media only screen and (min-height: 960px) {
+  .result-container {
+    height: 28rem;
+  }
+}
+
 .form-control__dark-theme,
 .form-control__dark-theme:focus {
   background-color: var(--secondary-dark-bg-color);
