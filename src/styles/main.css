@@ -62,7 +62,7 @@ code {
   height: 23rem;
 }
 
-@media only screen and (min-height: 960px) {
+@media only screen and (min-height: 852px) {
   .result-container {
     height: 28rem;
   }
